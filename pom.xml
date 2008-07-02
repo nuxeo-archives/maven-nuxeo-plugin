@@ -44,13 +44,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-dependency-plugin</artifactId>
-      <version>2.0</version>
-    </dependency>
-     -->
   </dependencies>
 
   <build>
@@ -79,9 +72,9 @@
   </build>
 
   <scm>
-    <connection>scm:svn:http://svn.nuxeo.org/nuxeo/nuxeo-preprocessing-plugin/trunk</connection>
-    <developerConnection>scm:svn:https://svn.nuxeo.org/nuxeo/nuxeo-preprocessing-plugin/trunk</developerConnection>
-    <url>http://svn.nuxeo.org/trac/nuxeo/browser/nuxeo-preprocessing-plugin/trunk</url>
+    <connection>scm:svn:http://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/trunk</connection>
+    <developerConnection>scm:svn:https://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/trunk</developerConnection>
+    <url>http://svn.nuxeo.org/trac/nuxeo/browser/org.nuxeo.build/maven-nuxeo-plugin/trunk</url>
   </scm>
 
 
