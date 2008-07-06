@@ -273,60 +273,89 @@ public class ArtifactSet extends ArtifactResourceSet {
             if (superSet != null) {
                 artifacts.addAll(superSet.getArtifacts());
             }
-            // apply include filters
-            ArtifactFilter filter = getIncludeFilter();
-            if (filter != null) {
-                Iterator<Artifact> it = artifacts.iterator();
-                while (it.hasNext()) {
-                    Artifact artifact = it.next();
-                    if (!filter.include(artifact)) {
-                        it.remove();
-                    }
-                }
-            }
-            // apply include dependencies filter
-            if (includeDependencies) {
-                HashSet<Artifact> result = new HashSet<Artifact>();
-                for (Artifact artifact : artifacts) {
-                    Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
-                    if (deps!=null) {
-                        if (mojo.getLog().isDebugEnabled()) {
-                            mojo.getLog().debug("add dependencies for "+artifact);
-                            for (Artifact dep:deps) {
-                                if (!result.contains(dep)) {
-                                    mojo.getLog().debug("   added "+dep);
-                                }
-                            }
-                        }
-                        result.addAll(deps);
-                    }
-                }
-                artifacts.addAll(result);
-            }
-            // apply exclude filters
-            filter = getExcludeFilter();
-            if (filter != null) {
-                Iterator<Artifact> it = artifacts.iterator();
-                while (it.hasNext()) {
-                    if (filter.include(it.next())) {
-                        it.remove();
-                    }
-                }
-            }
-            // apply exclude dependencies
-            if (excludeDependencies) {
-                HashSet<Artifact> result = new HashSet<Artifact>();
-                for (Artifact artifact : artifacts) {
-                    Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
-                    result.addAll(deps);
-                }
-                artifacts.removeAll(result);
-            }
+            applyIncludeFilters();
+            applyExcludeFilters();
+            applyIncludeDependenciesFilter();
+            // apply again exclusion in case of artifacts being included as
+            // dependencies
+            applyExcludeFilters();
+            applyExcludeDependenciesFilter();
             resolveArtifacts(artifacts);
             // add explicit declared artifacts
             collectResolvedArtifacts(artifacts);
         }
         return artifacts;
+    }
+
+    /**
+     * apply exclude dependencies
+     */
+    private void applyExcludeDependenciesFilter() {
+        if (excludeDependencies) {
+            HashSet<Artifact> result = new HashSet<Artifact>();
+            for (Artifact artifact : artifacts) {
+                Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
+                result.addAll(deps);
+            }
+            artifacts.removeAll(result);
+        }
+    }
+
+    /**
+     * apply include dependencies filter
+     */
+    private void applyIncludeDependenciesFilter() {
+        if (includeDependencies) {
+            HashSet<Artifact> result = new HashSet<Artifact>();
+            for (Artifact artifact : artifacts) {
+                Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
+                if (deps != null) {
+                    if (mojo.getLog().isDebugEnabled()) {
+                        mojo.getLog().debug("add dependencies for " + artifact);
+                        for (Artifact dep : deps) {
+                            if (!result.contains(dep)) {
+                                mojo.getLog().debug("   added " + dep);
+                            }
+                        }
+                    }
+                    result.addAll(deps);
+                }
+            }
+            artifacts.addAll(result);
+        }
+    }
+
+    /**
+     * apply exclude filters
+     */
+    private void applyExcludeFilters() {
+        ArtifactFilter filter = getExcludeFilter();
+        if (filter != null) {
+            Iterator<Artifact> it = artifacts.iterator();
+            while (it.hasNext()) {
+                Artifact nextArtifact = it.next();
+                if (filter.include(nextArtifact)) {
+                    mojo.getLog().debug("excluding " + nextArtifact.getId());
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * apply include filters
+     */
+    private void applyIncludeFilters() {
+        ArtifactFilter filter = getIncludeFilter();
+        if (filter != null) {
+            Iterator<Artifact> it = artifacts.iterator();
+            while (it.hasNext()) {
+                Artifact artifact = it.next();
+                if (!filter.include(artifact)) {
+                    it.remove();
+                }
+            }
+        }
     }
 
     private void resolveArtifacts(Set<Artifact> artifactsToResolve) {
@@ -360,8 +389,10 @@ public class ArtifactSet extends ArtifactResourceSet {
     public String toString() {
         StringBuffer toStringBuffer = new StringBuffer();
         toStringBuffer.append("{" + getId() + "," + getExtendedSets() + ","
-                + getExtendedSetId() + ",includeDependencies=" + getIncludeDependencies() + ",resolvedArtifacts=" + getResolvedArtifacts()+
-                ", "+getArtifacts().size()+" artifacts="+getArtifacts());
+                + getExtendedSetId() + ",includeDependencies="
+                + getIncludeDependencies() + ",resolvedArtifacts="
+                + getResolvedArtifacts() + ", " + getArtifacts().size()
+                + " artifacts=" + getArtifacts());
         return toStringBuffer.toString();
     }
 
