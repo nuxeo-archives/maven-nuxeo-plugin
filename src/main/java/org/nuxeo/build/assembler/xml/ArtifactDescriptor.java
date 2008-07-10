@@ -35,6 +35,8 @@ import org.nuxeo.common.xmap.annotation.XObject;
 @XObject("artifact")
 public class ArtifactDescriptor {
 
+    private static final String CATEGORIES_SEPARATOR = ",";
+
     @XNode("@group")
     public String group;
 
@@ -63,11 +65,11 @@ public class ArtifactDescriptor {
     public String transitive;
 
     /**
-     * Category pattern to match for dependencies with Bundle-Category in
-     * Manifest
+     * Pattern to match for dependencies with Bundle-Category in
+     * Manifest; may contain multiple categories separated by {@value #CATEGORIES_SEPARATOR}.
      */
     @XNode("@category")
-    public String category;
+    public String categories;
 
     /**
      * Whether to include dependencies depending on at least one dependency
@@ -131,19 +133,19 @@ public class ArtifactDescriptor {
             if (trail != null) {
                 andFilter.add(PatternFilterFactory.createTrailFilter(trail));
             }
-            if (category != null) {
-                // andFilter.add(PatternFilterFactory.createCategoryFilter(category,mojo));
-                ArtifactFilter bundleCategoryFilter = PatternFilterFactory.createBundleCategoryFilter(
-                        category, mojo);
-                if (includeDependsOnCategory) {
-                    OrArtifactFilter orFilter = new OrArtifactFilter();
-                    orFilter.add(PatternFilterFactory.createDependsOnCategoryFilter(
-                            category, mojo));
+            if (getCategories()!=null && getCategories().length>0) {
+                OrArtifactFilter orFilter = new OrArtifactFilter();
+                for (String category:getCategories()) {
+                    // andFilter.add(PatternFilterFactory.createCategoryFilter(category,mojo));
+                    ArtifactFilter bundleCategoryFilter = PatternFilterFactory.createBundleCategoryFilter(
+                            category, mojo);
+                    if (includeDependsOnCategory) {
+                        orFilter.add(PatternFilterFactory.createDependsOnCategoryFilter(
+                                category, mojo));
+                    }
                     orFilter.add(bundleCategoryFilter);
-                    andFilter.add(orFilter);
-                } else {
-                    andFilter.add(bundleCategoryFilter);
                 }
+                andFilter.add(orFilter);
             }
             filter = andFilter;
         }
@@ -152,6 +154,10 @@ public class ArtifactDescriptor {
 
     public ArtifactFilter getFilter() {
         return getFilter(null);
+    }
+
+    public String[] getCategories() {
+        return categories!=null?categories.split(CATEGORIES_SEPARATOR):null;
     }
 
 }
