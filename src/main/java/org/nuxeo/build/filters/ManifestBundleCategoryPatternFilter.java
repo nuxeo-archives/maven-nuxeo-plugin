@@ -59,6 +59,10 @@ public class ManifestBundleCategoryPatternFilter extends AbstractPatternFilter {
             }
             return valuesToMatch;
         }
+        // ignore pom files
+        if (file.getName().endsWith(".pom")) {
+            return valuesToMatch;
+        }
         try {
             JarFile jarFile = new JarFile(file, true);
             Manifest mf = jarFile.getManifest();
