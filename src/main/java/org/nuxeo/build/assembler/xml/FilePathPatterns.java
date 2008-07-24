@@ -19,6 +19,9 @@
 
 package org.nuxeo.build.assembler.xml;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.nuxeo.common.utils.FilePathPattern;
 import org.nuxeo.common.utils.Path;
 
@@ -26,9 +29,9 @@ import org.nuxeo.common.utils.Path;
  * Base class for patterns containers
  * <p>
  * Provides common pattern matching methods
- * 
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class FilePathPatterns {
 
@@ -57,7 +60,7 @@ public class FilePathPatterns {
 
     /**
      * Find a match on the given text with one of the patterns
-     * 
+     *
      * @param text the text to match
      * @return true if the text match one of the patterns false otherwise
      */
@@ -71,4 +74,16 @@ public class FilePathPatterns {
         return false;
     }
 
+    public void addPatterns(String[] newPatterns) {
+        ArrayList<FilePathPattern> newPatternsList=new ArrayList<FilePathPattern>();
+        if (this.patterns!=null) {
+            newPatternsList.addAll(Arrays.asList(this.patterns));
+        }
+        for (String pattern : newPatterns) {
+            newPatternsList.add(new FilePathPattern(pattern));
+        }
+        this.patterns=newPatternsList.toArray(new FilePathPattern[newPatternsList.size()]);
+    }
+
 }
+
