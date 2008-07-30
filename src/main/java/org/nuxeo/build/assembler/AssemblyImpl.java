@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -240,7 +241,6 @@ public class AssemblyImpl implements Assembly {
                 log.info("Processing set: " + id);
                 if (id != null) {
                     setMap.put(id, set);
-                    log.debug(id+": "+set.getArtifacts());
                 } else {
                     String extendsSetId = set.getExtendedSetId();
                     if (extendsSetId != null) {
@@ -259,6 +259,7 @@ public class AssemblyImpl implements Assembly {
                         setMap.put(extendsSetId, set);
                     }
                 }
+                log.debug(id+": "+set.getArtifacts());
             }
         }
 
