@@ -53,7 +53,7 @@ public class FileResource implements Resource {
     }
 
     public boolean isFile() {
-        return true;
+        return file != null && file.isFile();
     }
 
     /**

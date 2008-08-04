@@ -203,16 +203,9 @@ public class AssembleCommand implements Command {
     public void copy(ResourceSet set, File outDir) throws IOException {
         for (Resource res : set) {
             File toFile = new File(outDir, res.getName());
-            if (res.isFile()) {
-                File file = res.getFile();
-                if (file==null) {
-                    log.debug("Skipping " + res.getName() + " (no file attached)");
-                    continue;
-                }
-                if (file.isDirectory()) {
-                    toFile.mkdirs();
-                    continue;
-                }
+            if (!res.isFile()) {
+                toFile.mkdirs();
+                continue; // a  directory
             }
             toFile.getParentFile().mkdirs();
             InputStream in = res.getStream();
@@ -229,11 +222,8 @@ public class AssembleCommand implements Command {
         ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(file));
         try {
             for (Resource res : set) {
-                if (res.isFile()) {
-                    File dir = res.getFile();
-                    if (dir.isDirectory()) {
-                        continue;
-                    }
+                if (!res.isFile()) {
+                    continue;
                 }
                 log.info("Compressing " + res.getName() + " to "
                         + file.getPath());

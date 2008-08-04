@@ -19,12 +19,15 @@
 
 package org.nuxeo.build.assembler.xml;
 
+import java.util.Map;
+
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
 import org.nuxeo.build.filters.OrArtifactFilter;
 import org.nuxeo.build.filters.PatternFilterFactory;
 import org.nuxeo.common.utils.StringUtils;
+import org.nuxeo.common.xmap.annotation.XContext;
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XObject;
 
@@ -37,16 +40,28 @@ public class ArtifactDescriptor {
 
     private static final String CATEGORIES_SEPARATOR = ",";
 
+    @XContext("mojo")
+    protected AbstractNuxeoAssembler mojo;
+
     @XNode("@group")
+        void setParametrizedGroup(String value) {
+        group = StringUtils.expandVars(value, mojo.getProject().getProperties());
+    }
     public String group;
 
     @XNode("@name")
+        void setParametrizedName(String value) {
+        name = StringUtils.expandVars(value, mojo.getProject().getProperties());
+    }
     public String name;
 
     @XNode("@type")
     public String type;
 
     @XNode("@version")
+    void setParametrizedVersion(String value) {
+        version = StringUtils.expandVars(value, mojo.getProject().getProperties());
+    }
     public String version;
 
     @XNode("@scope")

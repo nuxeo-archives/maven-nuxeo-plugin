@@ -19,17 +19,16 @@
 
 package org.nuxeo.build.assembler.resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * A read only resource. A resource have a name (the content path) and provide a
  * mean to retrieve the resource content using an {@link InputStream}
- * 
- * 
+ *
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public interface Resource {
 
@@ -38,7 +37,5 @@ public interface Resource {
     public boolean isFile();
 
     public InputStream getStream() throws IOException;
-
-    public File getFile();
 
 }

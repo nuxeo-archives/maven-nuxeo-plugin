@@ -375,6 +375,9 @@ public class ArtifactSet extends ArtifactResourceSet {
         ArtifactResolver resolver = mojo.getArtifactResolver();
         try {
             for (ArtifactDescriptor ad : artifactDescriptors) {
+                if (ad.version == null) { // no version given - try to guess the version using the managed versions
+                    tryFillVersion(ad);
+                }
                 Artifact artifact = resolver.resolve(ad);
                 if (artifact != null) {
                     artifactSet.add(artifact);
@@ -384,6 +387,34 @@ public class ArtifactSet extends ArtifactResourceSet {
             throw new Error(e);
         }
     }
+
+    protected void tryFillVersion(ArtifactDescriptor ad) {
+        if (ad.group == null || ad.name == null) {
+            return; // cannot guess version
+        }
+        Artifact artifact = null;
+        Map map = mojo.getProject().getManagedVersionMap();
+        String key=ad.group+":"+ad.name;
+        if (ad.type != null) {
+            key = key+":"+ad.type;
+            artifact = (Artifact)map.get(key); // group:artifact:type:version
+        } else {
+            String k = key+":jar";
+            artifact = (Artifact)map.get(k);
+            if (artifact == null) {
+                artifact = (Artifact)map.get(key+":ejb");
+                if (artifact == null) {
+                    artifact = (Artifact)map.get(key+":rar");
+                }
+            }
+        }
+        if (artifact != null) {
+            ad.version = artifact.getVersion();
+            ad.type = artifact.getType();
+        }
+    }
+
+
 
     @Override
     public String toString() {

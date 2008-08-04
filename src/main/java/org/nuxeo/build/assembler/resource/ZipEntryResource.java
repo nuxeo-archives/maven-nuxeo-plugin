@@ -27,7 +27,7 @@ import java.util.zip.ZipFile;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class ZipEntryResource implements Resource {
 
@@ -57,7 +57,7 @@ public class ZipEntryResource implements Resource {
     }
 
     public boolean isFile() {
-        return false;
+        return !entry.isDirectory();
     }
 
     public File getFile() {

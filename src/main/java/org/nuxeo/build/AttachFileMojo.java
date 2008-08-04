@@ -25,19 +25,19 @@ import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * Goal which preprocess a nuxeo EAR
- * 
+ *
  * @goal attach
- * 
- * 
+ *
+ *
  * @phase package
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class AttachFileMojo extends AbstractMojo {
 
     /**
      * Location of the file.
-     * 
+     *
      * @parameter expression="${project}"
      * @required
      */
@@ -67,7 +67,7 @@ public class AttachFileMojo extends AbstractMojo {
 
     /**
      * Maven ProjectHelper
-     * 
+     *
      * @component
      */
     private MavenProjectHelper projectHelper;
@@ -82,7 +82,7 @@ public class AttachFileMojo extends AbstractMojo {
                 projectHelper.attachArtifact(project, new File(file),
                         classifier);
             }
-        } else if (type != null) {
+        } else if (type == null) {
             throw new MojoExecutionException(
                     "Attached artifacts must define at least a type or a classifier");
         } else {
