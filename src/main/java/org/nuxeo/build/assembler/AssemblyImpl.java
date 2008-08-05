@@ -23,7 +23,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -214,8 +213,13 @@ public class AssemblyImpl implements Assembly {
         if (fileSets != null) {
             log.info("Processing resource file sets");
             for (FileSet set : fileSets) {
+                String profile = set.getProfile();
+                if (profile != null && !mojo.isProfileActivated(profile)) {
+                    log.info("Ignoring set: " + set.getId() + ". requires profile: "+profile);
+                    continue;
+                }
                 String id = set.getId();
-                log.info("Processing set: " + id);
+                log.info("Processing set: " + id + " [profile: "+profile+"]");
                 if (id != null) {
                     setMap.put(id, set);
                 }
@@ -225,8 +229,13 @@ public class AssemblyImpl implements Assembly {
         if (zipEntrySets != null) {
             log.info("Processing zip entry sets");
             for (ZipEntrySet set : zipEntrySets) {
+                String profile = set.getProfile();
+                if (profile != null && !mojo.isProfileActivated(profile)) {
+                    log.info("Ignoring set: " + set.getId() + ". requires profile: "+profile);
+                    continue;
+                }
                 String id = set.getId();
-                log.info("Processing set: " + id);
+                log.info("Processing set: " + id + " [profile: "+profile+"]");
                 if (id != null) {
                     setMap.put(id, set);
                 }
@@ -237,8 +246,13 @@ public class AssemblyImpl implements Assembly {
         if (artifactSets != null) {
             log.info("Processing artifact sets");
             for (ArtifactSet set : artifactSets) {
+                String profile = set.getProfile();
+                if (profile != null && !mojo.isProfileActivated(set.getProfile())) {
+                    log.info("Ignoring set: " + set.getId() + ". requires profile: "+profile);
+                    continue;
+                }
                 String id = set.getId();
-                log.info("Processing set: " + id);
+                log.info("Processing set: " + id + " [profile: "+profile+"]");
                 if (id != null) {
                     setMap.put(id, set);
                 } else {
@@ -298,13 +312,18 @@ public class AssemblyImpl implements Assembly {
             FileUtils.deleteTree(targetFile);
         }
 
+        String prefix = mojo.getZipRoot();
         String formats = mojo.getFormat();
         for (String pack : formats.split(FORMAT_SEPARATOR)) {
             if ("zip".equals(pack)) { // only zip format is supported for now
                                         // (except directory)
                 File targetFileZiped = new File(targetFile.getParentFile(),
                         targetFile.getName() + ".zip");
-                ZipUtils.zip(targetDir.listFiles(), targetFileZiped);
+                if (prefix != null) {
+                    ZipUtils.zip(targetDir.listFiles(), targetFileZiped, prefix);
+                } else {
+                    ZipUtils.zip(targetDir.listFiles(), targetFileZiped);
+                }
                 log.info("Zipped target to: " + targetFileZiped);
             } else { // should be "directory" but accept anything else than
                         // zip

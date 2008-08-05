@@ -30,8 +30,10 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
 import org.nuxeo.build.assembler.resource.CompositeResourceSet;
+import org.nuxeo.build.assembler.resource.FileResource;
 import org.nuxeo.build.assembler.resource.Resource;
 import org.nuxeo.build.assembler.resource.ResourceSet;
+import org.nuxeo.build.assembler.xml.FileSet;
 import org.nuxeo.build.assembler.xml.Files;
 import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.common.utils.ZipUtils;
@@ -67,6 +69,9 @@ public class AssembleCommand implements Command {
 
     @XNode("unpack")
     private boolean unpack;
+
+    @XNode("delete")
+    private boolean delete;
 
     @XNode("unpackInNewDirectory")
     private boolean unpackInNewDirectory;
@@ -180,7 +185,7 @@ public class AssembleCommand implements Command {
                 setName = mojo.expandVars(setName);
                 ResourceSet set = setMap.get(setName);
                 if (set != null) {
-                    mojo.getLog().debug("add "+set);
+                    mojo.getLog().debug("add " + set);
                     cset.add(set);
                 } else {
                     System.out.println("Skip unfound set: " + setName);
@@ -194,6 +199,8 @@ public class AssembleCommand implements Command {
         } else if (unpack) {
             outDir.mkdirs();
             unzip(cset, outDir);
+        } else if (delete) {
+            remove(cset, outDir);
         } else {
             outDir.mkdirs();
             copy(cset, outDir);
@@ -205,7 +212,7 @@ public class AssembleCommand implements Command {
             File toFile = new File(outDir, res.getName());
             if (!res.isFile()) {
                 toFile.mkdirs();
-                continue; // a  directory
+                continue; // a directory
             }
             toFile.getParentFile().mkdirs();
             InputStream in = res.getStream();
@@ -214,6 +221,21 @@ public class AssembleCommand implements Command {
                 FileUtils.copyToFile(in, toFile);
             } finally {
                 in.close();
+            }
+        }
+    }
+
+    public void remove(ResourceSet set, File outDir) {
+        for (Resource res : set) {
+            if (!(res instanceof FileResource)) {
+                throw new Error("Only File Resources can be used on remove command");
+            }
+            File file = new File(outDir, res.getName());
+            log.info("Deleting " + file.getAbsolutePath());
+            if (file.isFile()) {
+                file.delete();
+            } else {
+                FileUtils.deleteTree(file);
             }
         }
     }

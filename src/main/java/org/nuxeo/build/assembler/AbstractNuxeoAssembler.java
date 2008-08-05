@@ -24,13 +24,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactCollector;
+import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -46,16 +49,9 @@ import org.nuxeo.common.utils.StringUtils;
 import org.nuxeo.common.xmap.Context;
 
 /**
- * @author jcarsique
  *
- */
-/**
+ * @author bstefanescu
  * @author jcarsique
- *
- */
-/**
- * @author jcarsique
- *
  */
 public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         NuxeoAssembler {
@@ -140,6 +136,15 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
     protected String format;
 
     /**
+     * Whether to use a prefix when compressing
+     * (the prefix determine the directory on the root of the zip package)
+     *
+     * @parameter expression="${zipRoot}"
+     *
+     */
+    protected String zipRoot;
+
+    /**
      * Whether or not to run the preprocessor after the assembly
      *
      * @parameter expression="${runPreprocessor}"
@@ -187,6 +192,9 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     private static int offset=0;
 
+    // extends project properties
+    private Properties props;
+
     public AbstractNuxeoAssembler() {
         super();
     }
@@ -206,12 +214,28 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         return artifactResolver;
     }
 
+
+    public boolean isProfileActivated(String id) {
+        List<Profile> profiles = project.getActiveProfiles();
+        for (Profile p : profiles) {
+            if (p.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public File getBasedir() {
         return basedir;
     }
 
     public String getFormat() {
         return format;
+    }
+
+    public String getZipRoot() {
+        return zipRoot;
     }
 
     public String getOutputDirectory() {
@@ -365,6 +389,14 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
             }
         }
         return artifactFound;
+    }
+
+    public Properties getProperties() {
+        if (props == null) {
+            props = project.getProperties();
+            props.put("project.version", project.getVersion());
+        }
+        return props;
     }
 
 

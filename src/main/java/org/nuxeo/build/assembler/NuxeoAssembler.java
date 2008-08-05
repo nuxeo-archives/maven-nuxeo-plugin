@@ -21,6 +21,7 @@ package org.nuxeo.build.assembler;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.project.MavenProject;
@@ -44,4 +45,9 @@ public interface NuxeoAssembler extends Mojo {
 
     public abstract String getFormat();
 
+    public abstract String getZipRoot();
+
+    public abstract boolean isProfileActivated(String id);
+
+    public Properties getProperties();
 }

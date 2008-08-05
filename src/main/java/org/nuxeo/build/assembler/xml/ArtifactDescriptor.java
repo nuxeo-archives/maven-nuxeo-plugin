@@ -45,13 +45,13 @@ public class ArtifactDescriptor {
 
     @XNode("@group")
         void setParametrizedGroup(String value) {
-        group = StringUtils.expandVars(value, mojo.getProject().getProperties());
+        group = StringUtils.expandVars(value, mojo.getProperties());
     }
     public String group;
 
     @XNode("@name")
         void setParametrizedName(String value) {
-        name = StringUtils.expandVars(value, mojo.getProject().getProperties());
+        name = StringUtils.expandVars(value, mojo.getProperties());
     }
     public String name;
 
@@ -60,7 +60,7 @@ public class ArtifactDescriptor {
 
     @XNode("@version")
     void setParametrizedVersion(String value) {
-        version = StringUtils.expandVars(value, mojo.getProject().getProperties());
+        version = StringUtils.expandVars(value, mojo.getProperties());
     }
     public String version;
 
@@ -92,6 +92,9 @@ public class ArtifactDescriptor {
      */
     @XNode("@includeDependsOnCategory")
     public boolean includeDependsOnCategory = true;
+
+    @XNode("@profile")
+    public String profile;
 
     private ArtifactFilter filter;
 

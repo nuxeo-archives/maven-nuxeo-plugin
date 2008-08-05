@@ -63,6 +63,9 @@ public class FileSet extends FileResourceSet {
     @XNode("excludes")
     private ExcludePatterns excludes;
 
+    @XNode("profile")
+    private String profile;
+
     private ExcludePatterns excludePatterns;
 
     private String[] defaultExclusions = new String[] { "**/.svn", "**/.hg" };
@@ -81,6 +84,20 @@ public class FileSet extends FileResourceSet {
      */
     public void setDirectory(String directory) {
         this.directory = directory;
+    }
+
+    /**
+     * @return the profile.
+     */
+    public String getProfile() {
+        return profile;
+    }
+
+    /**
+     * @param profile the profile to set.
+     */
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
     /**

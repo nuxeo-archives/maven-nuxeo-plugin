@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
 import org.nuxeo.build.assembler.ArtifactResolver;
@@ -76,6 +77,9 @@ public class ArtifactSet extends ArtifactResourceSet {
     @XNodeList(value = "excludes/artifact", type = ArrayList.class, componentType = ArtifactDescriptor.class)
     private List<ArtifactDescriptor> excludes;
 
+    @XNode("@profile")
+    protected String profile;
+
     private ArtifactFilter includeFilter;
 
     private ArtifactFilter excludeFilter;
@@ -97,6 +101,21 @@ public class ArtifactSet extends ArtifactResourceSet {
     public void setId(String id) {
         this.id = id;
     }
+
+    /**
+     * @return the profile.
+     */
+    public String getProfile() {
+        return profile;
+    }
+
+    /**
+     * @param profile the profile to set.
+     */
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
 
     /**
      * @return the includes.
@@ -371,10 +390,17 @@ public class ArtifactSet extends ArtifactResourceSet {
         }
     }
 
+
     public void collectResolvedArtifacts(Set<Artifact> artifactSet) {
         ArtifactResolver resolver = mojo.getArtifactResolver();
+
         try {
             for (ArtifactDescriptor ad : artifactDescriptors) {
+                if (ad.profile != null) {
+                    if (mojo.isProfileActivated(ad.profile)) {
+                        continue;
+                    }
+                }
                 if (ad.version == null) { // no version given - try to guess the version using the managed versions
                     tryFillVersion(ad);
                 }

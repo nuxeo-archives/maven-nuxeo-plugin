@@ -33,6 +33,7 @@ import org.nuxeo.build.assembler.resource.Resource;
 import org.nuxeo.build.assembler.resource.ResourceIterator;
 import org.nuxeo.build.assembler.resource.ResourceSet;
 import org.nuxeo.build.assembler.resource.ZipEntryResource;
+import org.nuxeo.common.utils.StringUtils;
 import org.nuxeo.common.utils.ZipFileIterator;
 import org.nuxeo.common.xmap.annotation.XContext;
 import org.nuxeo.common.xmap.annotation.XNode;
@@ -40,9 +41,9 @@ import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
  * Descriptor for zipEntrySet element
- * 
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 @XObject("zipEntrySet")
 public class ZipEntrySet implements ResourceSet {
@@ -58,6 +59,9 @@ public class ZipEntrySet implements ResourceSet {
 
     // the group:name:version
     @XNode("artifact")
+    public void setParametrizeAtrifact(String artifactId) {
+        this.artifactId = StringUtils.expandVars(artifactId, mojo.getProperties());
+    }
     private String artifactId;
 
     @XNode("includes")
@@ -65,6 +69,9 @@ public class ZipEntrySet implements ResourceSet {
 
     @XNode("excludes")
     private ExcludePatterns excludes;
+
+    @XNode("profile")
+    private String profile;
 
     /**
      * @return the id.
@@ -78,6 +85,20 @@ public class ZipEntrySet implements ResourceSet {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * @return the profile.
+     */
+    public String getProfile() {
+        return profile;
+    }
+
+    /**
+     * @param profile the profile to set.
+     */
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
     /**
