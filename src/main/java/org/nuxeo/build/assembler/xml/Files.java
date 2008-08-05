@@ -37,7 +37,7 @@ import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 @XObject("files")
 public class Files implements ResourceSet {
@@ -54,6 +54,9 @@ public class Files implements ResourceSet {
     @XNodeList(value = "extends", type = String[].class, componentType = String.class)
     private String[] extendedSets;
 
+    @XNode("@profile")
+    private String profile;
+
     /**
      * @return the files.
      */
@@ -66,6 +69,20 @@ public class Files implements ResourceSet {
      */
     public void setFiles(String[] files) {
         this.files = files;
+    }
+
+    /**
+     * @return the profile.
+     */
+    public String getProfile() {
+        return profile;
+    }
+
+    /**
+     * @param profile the profile to set.
+     */
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
     /**

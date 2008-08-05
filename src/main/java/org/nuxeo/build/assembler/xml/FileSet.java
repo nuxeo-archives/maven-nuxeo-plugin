@@ -63,7 +63,7 @@ public class FileSet extends FileResourceSet {
     @XNode("excludes")
     private ExcludePatterns excludes;
 
-    @XNode("profile")
+    @XNode("@profile")
     private String profile;
 
     private ExcludePatterns excludePatterns;

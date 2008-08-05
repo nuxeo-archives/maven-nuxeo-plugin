@@ -73,7 +73,7 @@ public class ZipEntrySet implements ResourceSet {
     @XNode("excludes")
     private ExcludePatterns excludes;
 
-    @XNode("profile")
+    @XNode("@profile")
     private String profile;
 
     /**
