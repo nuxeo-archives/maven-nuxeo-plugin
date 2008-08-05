@@ -338,7 +338,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
     }
 
     public String expandVars(String value) {
-        return StringUtils.expandVars(value, project.getProperties());
+        return StringUtils.expandVars(value, getProperties());
     }
 
     public void execute(AssemblyBuilder assemblyBuilder)
@@ -395,6 +395,9 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         if (props == null) {
             props = project.getProperties();
             props.put("project.version", project.getVersion());
+            props.put("basedir", project.getBasedir());
+            props.put("outputDirectory", project.getBuild().getOutputDirectory());
+            props.put("buildDirectory", project.getBuild().getDirectory());
         }
         return props;
     }

@@ -55,12 +55,15 @@ public class ZipEntrySet implements ResourceSet {
     private String id;
 
     @XNode("file")
+    public void setParametrizedFile(String value) {
+        zipFile = mojo.expandVars(value);
+    }
     private String zipFile;
 
     // the group:name:version
     @XNode("artifact")
     public void setParametrizeAtrifact(String artifactId) {
-        this.artifactId = StringUtils.expandVars(artifactId, mojo.getProperties());
+        this.artifactId = mojo.expandVars(artifactId);
     }
     private String artifactId;
 
