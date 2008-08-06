@@ -19,8 +19,6 @@
 
 package org.nuxeo.build.assembler.xml;
 
-import java.util.Map;
-
 import org.apache.maven.artifact.resolver.filter.AndArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
@@ -120,6 +118,9 @@ public class ArtifactDescriptor {
         }
         if (ar.length > 3) {
             ad.type = ar[3];
+        }
+        if (ar.length > 4) {
+            ad.classifier = ar[4];
         }
         return ad;
     }
