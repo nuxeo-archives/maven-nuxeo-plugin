@@ -33,7 +33,6 @@ import org.nuxeo.build.assembler.resource.Resource;
 import org.nuxeo.build.assembler.resource.ResourceIterator;
 import org.nuxeo.build.assembler.resource.ResourceSet;
 import org.nuxeo.build.assembler.resource.ZipEntryResource;
-import org.nuxeo.common.utils.StringUtils;
 import org.nuxeo.common.utils.ZipFileIterator;
 import org.nuxeo.common.xmap.annotation.XContext;
 import org.nuxeo.common.xmap.annotation.XNode;

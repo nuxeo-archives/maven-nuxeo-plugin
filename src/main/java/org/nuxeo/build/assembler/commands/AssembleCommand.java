@@ -33,7 +33,6 @@ import org.nuxeo.build.assembler.resource.CompositeResourceSet;
 import org.nuxeo.build.assembler.resource.FileResource;
 import org.nuxeo.build.assembler.resource.Resource;
 import org.nuxeo.build.assembler.resource.ResourceSet;
-import org.nuxeo.build.assembler.xml.FileSet;
 import org.nuxeo.build.assembler.xml.Files;
 import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.common.utils.ZipUtils;

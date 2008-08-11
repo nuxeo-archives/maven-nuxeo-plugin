@@ -125,7 +125,7 @@ public class ArtifactDescriptor {
         return ad;
     }
 
-    public ArtifactFilter getFilter(AbstractNuxeoAssembler mojo) {
+    public ArtifactFilter getFilter() {
         if (filter == null) {
             AndArtifactFilter andFilter = new AndArtifactFilter();
             if (group != null) {
@@ -169,10 +169,6 @@ public class ArtifactDescriptor {
             filter = andFilter;
         }
         return filter;
-    }
-
-    public ArtifactFilter getFilter() {
-        return getFilter(null);
     }
 
     public String[] getCategories() {

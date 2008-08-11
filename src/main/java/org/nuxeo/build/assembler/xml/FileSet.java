@@ -62,11 +62,11 @@ public class FileSet extends FileResourceSet {
 
     @XNode("excludes")
     private ExcludePatterns excludes;
+    private ExcludePatterns allExcludes;
 
     @XNode("@profile")
     private String profile;
 
-    private ExcludePatterns excludePatterns;
 
     private String[] defaultExclusions = new String[] { "**/.svn", "**/.hg" };
 
@@ -118,15 +118,15 @@ public class FileSet extends FileResourceSet {
      * @return the excludes.
      */
     public ExcludePatterns getExcludes() {
-        if (excludePatterns == null) {
+        if (allExcludes == null) {
             if (excludes != null) {
-                excludePatterns = excludes;
+                allExcludes = excludes;
             } else {
-                excludePatterns = new ExcludePatterns();
+                allExcludes = new ExcludePatterns();
             }
-            excludePatterns.addPatterns(defaultExclusions);
+            allExcludes.addPatterns(defaultExclusions);
         }
-        return excludePatterns;
+        return allExcludes;
     }
 
     /**
