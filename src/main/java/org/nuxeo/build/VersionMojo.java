@@ -12,24 +12,22 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Goal which preprocess a nuxeo EAR
- * 
+ *
  * @goal eclipse-version
- * 
+ *
  * @phase process-sources
- * 
+ *
  */
 public class VersionMojo extends AbstractMojo {
 
     /**
      * Project instance to analyze.
-     * 
+     *
      * @parameter expression="${project}"
      * @required
      * @readonly
      */
     private MavenProject project;
-
-    private static final String snapTag = "-SNAPSHOT";
 
     /**
      * @throws MojoExecutionException, MojoFailureException
@@ -44,49 +42,61 @@ public class VersionMojo extends AbstractMojo {
         }
     }
 
-    private String executeMojo(String ver) {
+    /**
+     * Executes the version transformation on the given parameter
+     *
+     * @param version String to transform
+     * @return
+     */
+    public String executeMojo(String version) {
         String eclipseVersion;
-        int snapIdx = ver.indexOf(snapTag);
-        boolean isSnapshot = snapIdx > 0;
-        if (isSnapshot) {
-            eclipseVersion = ver.substring(0, snapIdx);
+        String[] versionSplitted = version.split("^(\\d+\\.)+\\d*");
+        String trailingTag = (versionSplitted.length>0)?versionSplitted[versionSplitted.length - 1]:null;
+
+        if (trailingTag!=null) {
+            int tagIdx = version.indexOf(trailingTag);
+            eclipseVersion = version.substring(0, tagIdx);
+            trailingTag=trailingTag.replace(".", "_");
         } else {
-            eclipseVersion = ver;
+            eclipseVersion = version;
         }
-        eclipseVersion = format(eclipseVersion, isSnapshot);
-        if (isSnapshot) {
-            eclipseVersion += snapTag;
+        eclipseVersion = format(eclipseVersion,trailingTag);
+        if (trailingTag!=null) {
+            if (!eclipseVersion.endsWith(".") && !trailingTag.startsWith(".")) {
+                eclipseVersion += ".";
+            }
+            eclipseVersion += trailingTag;
         }
         return eclipseVersion;
     }
 
-    private String format(String shortVersion, boolean isSnapshot) {
+    private String format(String shortVersion, String trailingTag) {
         // test if it's a "branch" version x.y.z or "trunk" version x.y
-        if (shortVersion.matches("(\\d+\\.){2}\\d+")) {
-            if (isSnapshot) {
-                return shortVersion + ".";
-            } else {
+        if (shortVersion.matches("^(\\d+\\.){3}.*")) {
+            return shortVersion;
+        }
+//        if (shortVersion.matches("^(\\d+\\.){2}\\d+")) {
+//            return shortVersion +".0";
+//        }
+        if (shortVersion.matches("^(\\d+\\.){2}.*")) {
+            if (shortVersion.endsWith(".")) {
+                return shortVersion + "0.";
+            }
+            if (trailingTag==null) {
                 return shortVersion + ".0";
             }
+            return shortVersion;
         }
-        if (shortVersion.matches("(\\d+\\.)\\d+")) {
-            if (isSnapshot) {
-                return shortVersion + ".0.";
-            } else {
+        if (shortVersion.matches("^\\d+\\..*")) {
+            if (shortVersion.endsWith(".")) {
+                return shortVersion + "0.0.";
+            }
+            if (trailingTag==null) {
                 return shortVersion + ".0.0";
             }
+            return shortVersion + ".0";
         }
         return shortVersion;
-    }
-
-    public static void main(String[] args) {
-        List<String> l = new ArrayList<String>(Arrays.asList(
-                new VersionMojo().executeMojo("5.2-SNAPSHOT"),
-                new VersionMojo().executeMojo("5.2"),
-                new VersionMojo().executeMojo("5.1.3-SNAPSHOT"),
-                new VersionMojo().executeMojo("5.1.3")));
-        Collections.sort(l);
-        System.out.println(l);
     }
 
 }
