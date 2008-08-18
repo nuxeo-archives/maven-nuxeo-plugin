@@ -97,7 +97,7 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * @param id the id to set.
      */
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -111,7 +111,7 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * @param profile the profile to set.
      */
-    public void setProfile(String profile) {
+    public void setProfile(final String profile) {
         this.profile = profile;
     }
 
@@ -126,14 +126,14 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * @param artifacts to set.
      */
-    public void setArtifactDescriptors(List<ArtifactDescriptor> artifacts) {
+    public void setArtifactDescriptors(final List<ArtifactDescriptor> artifacts) {
         this.artifactDescriptors = artifacts;
     }
 
     /**
      * @param mojo the mojo to set.
      */
-    public void setMojo(AbstractNuxeoAssembler mojo) {
+    public void setMojo(final AbstractNuxeoAssembler mojo) {
         this.mojo = mojo;
     }
 
@@ -154,7 +154,7 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * @param extendedSetId the extendedSetId to set.
      */
-    public void setExtendedSetId(String extendedSetId) {
+    public void setExtendedSetId(final String extendedSetId) {
         this.extendedSetId = extendedSetId;
     }
 
@@ -168,7 +168,7 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * @param superSet the superSet to set.
      */
-    public void setSuperSet(ArtifactResourceSet superSet) {
+    public void setSuperSet(final ArtifactResourceSet superSet) {
         this.superSet = superSet;
     }
 
@@ -182,14 +182,14 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * @param extendedSets the extendedSets to set.
      */
-    public void setExtendedSets(String[] extendedSets) {
+    public void setExtendedSets(final String[] extendedSets) {
         this.importedSets = extendedSets;
     }
 
     /**
      * @param includeDependencies the includeDependencies to set.
      */
-    public void setIncludeDependencies(boolean includeDependencies) {
+    public void setIncludeDependencies(final boolean includeDependencies) {
         this.includeDependencies = includeDependencies;
     }
 
@@ -203,7 +203,7 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * @param excludeDependencies the excludeDependencies to set.
      */
-    public void setExcludeDependencies(boolean excludeDependencies) {
+    public void setExcludeDependencies(final boolean excludeDependencies) {
         this.excludeDependencies = excludeDependencies;
     }
 
@@ -225,11 +225,12 @@ public class ArtifactSet extends ArtifactResourceSet {
      * @return the includeFilter.
      */
     public ArtifactFilter getIncludeFilter() {
-        if (includes == null || includes.isEmpty())
+        if (includes == null || includes.isEmpty()) {
             return null;
+        }
         if (includeFilter == null) {
-            OrArtifactFilter filter = new OrArtifactFilter();
-            for (ArtifactDescriptor artifactDescriptor : includes) {
+            final OrArtifactFilter filter = new OrArtifactFilter();
+            for (final ArtifactDescriptor artifactDescriptor : includes) {
                 filter.add(artifactDescriptor.getFilter());
             }
             // TODO: add transitivity filter if needed
@@ -242,11 +243,12 @@ public class ArtifactSet extends ArtifactResourceSet {
      * @return the excludeFilter.
      */
     public ArtifactFilter getExcludeFilter() {
-        if (excludes == null || excludes.isEmpty())
+        if (excludes == null || excludes.isEmpty()) {
             return null;
+        }
         if (excludeFilter == null) {
-            OrArtifactFilter filter = new OrArtifactFilter();
-            for (ArtifactDescriptor afd : excludes) {
+            final OrArtifactFilter filter = new OrArtifactFilter();
+            for (final ArtifactDescriptor afd : excludes) {
                 filter.add(afd.getFilter());
             }
             // TODO: add transitivity filter if needed
@@ -256,21 +258,22 @@ public class ArtifactSet extends ArtifactResourceSet {
     }
 
     protected Set<Artifact> loadImportedSets() {
-        HashSet<Artifact> result = new HashSet<Artifact>();
-        Map<String, ResourceSet> sets = mojo.getResourceSetMap();
+        final HashSet<Artifact> result = new HashSet<Artifact>();
+        final Map<String, ResourceSet> sets = mojo.getResourceSetMap();
         if (importedSets != null && importedSets.length > 0) {
-            for (String setId : importedSets) {
-                ResourceSet set = sets.get(setId);
+            for (final String setId : importedSets) {
+                final ResourceSet set = sets.get(setId);
                 if (!(set instanceof ArtifactResourceSet)) {
                     mojo.getLog().warn(
                             "Cannot extend set " + setId
                                     + ". Set not found or not compatible");
                     continue;
                 }
-                ArtifactResourceSet arSet = (ArtifactResourceSet) set;
-                Iterator<Artifact> it = arSet.artifactIterator();
+                final ArtifactResourceSet arSet = (ArtifactResourceSet) set;
+                final Iterator<Artifact> it = arSet.artifactIterator();
+                // ESCA-JAVA0254:
                 while (it.hasNext()) {
-                    Artifact artifact=it.next();
+                    final Artifact artifact=it.next();
                     result.add(artifact);
                 }
             }
@@ -282,7 +285,6 @@ public class ArtifactSet extends ArtifactResourceSet {
      * Get produced artifacts (after extending, resolving and filtering)
      *
      * @return artifacts
-     * @throws MojoExecutionException
      */
     @Override
     public Set<Artifact> getArtifacts() {
@@ -291,7 +293,7 @@ public class ArtifactSet extends ArtifactResourceSet {
             artifacts = loadImportedSets();
             resolveArtifacts(artifacts);
             if (superSet != null) {
-                Set<Artifact> superSetArtifacts=superSet.getArtifacts();
+                final Set<Artifact> superSetArtifacts=superSet.getArtifacts();
                 resolveArtifacts(superSetArtifacts);
                 artifacts.addAll(superSetArtifacts);
             }
@@ -302,6 +304,7 @@ public class ArtifactSet extends ArtifactResourceSet {
             // dependencies
             applyExcludeFilters();
             applyExcludeDependenciesFilter();
+            resolveArtifacts(artifacts);
             // add explicitely declared artifacts
             collectResolvedArtifacts(artifacts);
         }
@@ -313,9 +316,9 @@ public class ArtifactSet extends ArtifactResourceSet {
      */
     private void applyExcludeDependenciesFilter() {
         if (excludeDependencies) {
-            HashSet<Artifact> result = new HashSet<Artifact>();
-            for (Artifact artifact : artifacts) {
-                Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
+            final HashSet<Artifact> result = new HashSet<Artifact>();
+            for (final Artifact artifact : artifacts) {
+                final Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
                 result.addAll(deps);
             }
             artifacts.removeAll(result);
@@ -327,13 +330,13 @@ public class ArtifactSet extends ArtifactResourceSet {
      */
     private void applyIncludeDependenciesFilter() {
         if (includeDependencies) {
-            HashSet<Artifact> result = new HashSet<Artifact>();
-            for (Artifact artifact : artifacts) {
-                Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
+            final HashSet<Artifact> result = new HashSet<Artifact>();
+            for (final Artifact artifact : artifacts) {
+                final Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
                 if (deps != null) {
                     if (mojo.getLog().isDebugEnabled()) {
                         mojo.getLog().debug("add dependencies for " + artifact);
-                        for (Artifact dep : deps) {
+                        for (final Artifact dep : deps) {
                             if (!result.contains(dep)) {
                                 mojo.getLog().debug("   added " + dep);
                             }
@@ -350,11 +353,11 @@ public class ArtifactSet extends ArtifactResourceSet {
      * apply exclude filters
      */
     private void applyExcludeFilters() {
-        ArtifactFilter filter = getExcludeFilter();
+        final ArtifactFilter filter = getExcludeFilter();
         if (filter != null) {
-            Iterator<Artifact> it = artifacts.iterator();
+            final Iterator<Artifact> it = artifacts.iterator();
             while (it.hasNext()) {
-                Artifact nextArtifact = it.next();
+                final Artifact nextArtifact = it.next();
                 if (filter.include(nextArtifact)) {
                     mojo.getLog().debug("removed " + nextArtifact+" (exclude filters)");
                     it.remove();
@@ -367,11 +370,11 @@ public class ArtifactSet extends ArtifactResourceSet {
      * apply include filters
      */
     private void applyIncludeFilters() {
-        ArtifactFilter filter = getIncludeFilter();
+        final ArtifactFilter filter = getIncludeFilter();
         if (filter != null) {
-            Iterator<Artifact> it = artifacts.iterator();
+            final Iterator<Artifact> it = artifacts.iterator();
             while (it.hasNext()) {
-                Artifact artifact = it.next();
+                final Artifact artifact = it.next();
                 if (!filter.include(artifact)) {
                     mojo.getLog().debug("removed " + artifact+" (include filters)");
                     it.remove();
@@ -380,13 +383,13 @@ public class ArtifactSet extends ArtifactResourceSet {
         }
     }
 
-    private void resolveArtifacts(Set<Artifact> artifactsToResolve) {
-        ArtifactResolver resolver = mojo.getArtifactResolver();
-        for (Artifact artifact : artifactsToResolve) {
+    private void resolveArtifacts(final Set<Artifact> artifactsToResolve) {
+        final ArtifactResolver resolver = mojo.getArtifactResolver();
+        for (final Artifact artifact : artifactsToResolve) {
             if (!artifact.isResolved()) {
                 try {
                     resolver.resolve(artifact);
-                } catch (MojoExecutionException e) {
+                } catch (final MojoExecutionException e) {
                     mojo.getLog().warn(e);
                 }
             }
@@ -394,40 +397,40 @@ public class ArtifactSet extends ArtifactResourceSet {
     }
 
 
-    public void collectResolvedArtifacts(Set<Artifact> artifactSet) {
-        ArtifactResolver resolver = mojo.getArtifactResolver();
+    public void collectResolvedArtifacts(final Set<Artifact> artifactSet) {
+        final ArtifactResolver resolver = mojo.getArtifactResolver();
 
         try {
-            for (ArtifactDescriptor ad : artifactDescriptors) {
+            for (final ArtifactDescriptor ad : artifactDescriptors) {
                 if (ad.profile != null && !mojo.isProfileActivated(ad.profile)) {
                     continue;
                 }
                 if (ad.version == null) { // no version given - try to guess the version using the managed versions
                     tryFillVersion(ad);
                 }
-                Artifact artifact = resolver.resolve(ad);
+                final Artifact artifact = resolver.resolve(ad);
                 if (artifact != null) {
                     mojo.getLog().info("add explicitely declared "+artifact);
                     artifactSet.add(artifact);
                 }
             }
-        } catch (MojoExecutionException e) {
+        } catch (final MojoExecutionException e) {
             throw new Error(e);
         }
     }
 
-    protected void tryFillVersion(ArtifactDescriptor ad) {
+    protected void tryFillVersion(final ArtifactDescriptor ad) {
         if (ad.group == null || ad.name == null) {
             return; // cannot guess version
         }
         Artifact artifact = null;
-        Map map = mojo.getProject().getManagedVersionMap();
+        final Map map = mojo.getProject().getManagedVersionMap();
         String key=ad.group+":"+ad.name;
         if (ad.type != null) {
-            key = key+":"+ad.type;
+            key += ":"+ad.type;
             artifact = (Artifact)map.get(key); // group:artifact:type:version
         } else {
-            String k = key+":jar";
+            final String k = key+":jar";
             artifact = (Artifact)map.get(k);
             if (artifact == null) {
                 artifact = (Artifact)map.get(key+":ejb");
@@ -446,7 +449,7 @@ public class ArtifactSet extends ArtifactResourceSet {
 
     @Override
     public String toString() {
-        StringBuffer toStringBuffer = new StringBuffer();
+        final StringBuffer toStringBuffer = new StringBuffer();
         toStringBuffer.append("{" + getId() + ", extends: " + getExtendedSets() + ","
                 + getExtendedSetId() + ", includeDependencies="
                 + getIncludeDependencies() + ", resolvedArtifacts="
