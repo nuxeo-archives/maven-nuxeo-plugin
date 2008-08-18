@@ -27,10 +27,10 @@ import org.nuxeo.build.assembler.Assembly;
 
 public interface AssemblyBuilder {
 
-    public abstract Assembly parse(File file) throws Exception;
+    Assembly parse(File file) throws Exception;
 
-    public abstract Assembly parse(URL url) throws Exception;
+    Assembly parse(URL url) throws Exception;
 
-    public abstract Assembly parse(InputStream in) throws Exception;
+    Assembly parse(InputStream in) throws Exception;
 
 }

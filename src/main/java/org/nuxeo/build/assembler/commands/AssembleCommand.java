@@ -48,6 +48,7 @@ import org.nuxeo.common.xmap.annotation.XObject;
 @XObject("assemble")
 public class AssembleCommand implements Command {
 
+    // ESCA-JAVA0244:
     @XContext("mojo")
     private AbstractNuxeoAssembler mojo;
 
@@ -74,9 +75,6 @@ public class AssembleCommand implements Command {
 
     @XNode("unpackInNewDirectory")
     private boolean unpackInNewDirectory;
-
-    public AssembleCommand() {
-    }
 
     /**
      * @return the outputFile.
@@ -138,13 +136,15 @@ public class AssembleCommand implements Command {
      * @return the files.
      */
     public String[] getFiles() {
+        // ESCA-JAVA0259:
         return files;
     }
 
     /**
      * @param files the files to set.
      */
-    public void setFiles(String[] files) {
+    public void setFiles(final String[] files) {
+        // ESCA-JAVA0256:
         this.files = files;
     }
 
@@ -187,7 +187,7 @@ public class AssembleCommand implements Command {
                     mojo.getLog().debug("add " + set);
                     cset.add(set);
                 } else {
-                    System.out.println("Skip unfound set: " + setName);
+                    mojo.getLog().warn("Skip unfound set: " + setName);
                 }
             }
         }
@@ -207,10 +207,12 @@ public class AssembleCommand implements Command {
     }
 
     public void copy(ResourceSet set, File outDir) throws IOException {
+//        mojo.getLog().debug("Copying to "+ outDir + " : " + set.toString());
         for (Resource res : set) {
             File toFile = new File(outDir, res.getName());
             if (!res.isFile()) {
                 toFile.mkdirs();
+                log.debug("Skipping resource (directory) " + res.getName());
                 continue; // a directory
             }
             toFile.getParentFile().mkdirs();

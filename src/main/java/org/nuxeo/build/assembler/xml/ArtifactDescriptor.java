@@ -42,57 +42,60 @@ public class ArtifactDescriptor {
     protected AbstractNuxeoAssembler mojo;
 
     @XNode("@group")
-        void setParametrizedGroup(String value) {
+    void setParametrizedGroup(String value) {
         group = StringUtils.expandVars(value, mojo.getProperties());
     }
-    public String group;
+
+    protected String group;
 
     @XNode("@name")
-        void setParametrizedName(String value) {
+    void setParametrizedName(String value) {
         name = StringUtils.expandVars(value, mojo.getProperties());
     }
-    public String name;
+
+    protected String name;
 
     @XNode("@type")
-    public String type;
+    protected String type;
 
     @XNode("@version")
     void setParametrizedVersion(String value) {
         version = StringUtils.expandVars(value, mojo.getProperties());
     }
-    public String version;
+
+    protected String version;
 
     @XNode("@scope")
-    public String scope;
+    protected String scope;
 
     @XNode("@classifier")
-    public String classifier;
+    protected String classifier;
 
     @XNode("@file")
-    public String file;
+    protected String file;
 
     @XNode("@trail")
-    public String trail;
+    protected String trail;
 
     @XNode("@transitive")
-    public String transitive;
+    protected String transitive;
 
     /**
-     * Pattern to match for dependencies with Bundle-Category in
-     * Manifest; may contain multiple categories separated by {@value #CATEGORIES_SEPARATOR}.
+     * Pattern to match for dependencies with Bundle-Category in Manifest; may
+     * contain multiple categories separated by {@value #CATEGORIES_SEPARATOR}.
      */
     @XNode("@category")
-    public String categories;
+    protected String categories;
 
     /**
      * Whether to include dependencies depending on at least one dependency
      * satisfying category pattern
      */
     @XNode("@includeDependsOnCategory")
-    public boolean includeDependsOnCategory = true;
+    protected boolean includeDependsOnCategory = true;
 
     @XNode("@profile")
-    public String profile;
+    protected String profile;
 
     private ArtifactFilter filter;
 
@@ -152,9 +155,9 @@ public class ArtifactDescriptor {
             if (trail != null) {
                 andFilter.add(PatternFilterFactory.createTrailFilter(trail));
             }
-            if (getCategories()!=null && getCategories().length>0) {
+            if (getCategories() != null && getCategories().length > 0) {
                 OrArtifactFilter orFilter = new OrArtifactFilter();
-                for (String category:getCategories()) {
+                for (String category : getCategories()) {
                     // andFilter.add(PatternFilterFactory.createCategoryFilter(category,mojo));
                     ArtifactFilter bundleCategoryFilter = PatternFilterFactory.createBundleCategoryFilter(
                             category, mojo);
@@ -172,7 +175,56 @@ public class ArtifactDescriptor {
     }
 
     public String[] getCategories() {
-        return categories!=null?categories.split(CATEGORIES_SEPARATOR):null;
+        return categories != null ? categories.split(CATEGORIES_SEPARATOR)
+                : null;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public String getClassifier() {
+        return classifier;
+    }
+
+    public void setClassifier(String classifier) {
+        this.classifier = classifier;
     }
 
 }

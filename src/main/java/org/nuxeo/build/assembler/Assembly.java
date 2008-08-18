@@ -30,18 +30,18 @@ public interface Assembly {
     /**
      * @param log the log to set.
      */
-    public abstract void setLog(Log log);
+    void setLog(Log log);
 
     /**
      * @return the log.
      */
-    public abstract Log getLog();
+    Log getLog();
 
     @SuppressWarnings("unchecked")
-    public abstract Map<String, Artifact> getArtifactMap();
+    Map<String, Artifact> getArtifactMap();
 
     @SuppressWarnings("unchecked")
-    public abstract Map<String, Artifact> getArtifactMapById();
+    Map<String, Artifact> getArtifactMapById();
 
     /**
      * Get an artifact given its ID. Two ID formats are supported:
@@ -54,15 +54,15 @@ public interface Assembly {
      *
      * @return the artifact if any or null otherwise
      */
-    public abstract Artifact getArtifact(String key);
+    Artifact getArtifact(String key);
 
     /**
      * @return the project.
      */
-    public abstract MavenProject getProject();
+    MavenProject getProject();
 
-    public abstract void run(Map<Object, Object> context) throws Exception;
+    void run(Map<Object, Object> context) throws Exception;
 
-    public abstract Object getDescriptor();
+    Object getDescriptor();
 
 }

@@ -20,13 +20,14 @@
 package org.nuxeo.build.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class CompositeIterator<T> implements java.util.Iterator<T> {
 
@@ -36,9 +37,6 @@ public class CompositeIterator<T> implements java.util.Iterator<T> {
 
     private Iterator<T> iterator;
 
-    public CompositeIterator() {
-    }
-
     public void addIterator(Iterator<T> iteratorT) {
         iterators.add(iteratorT);
     }
@@ -47,7 +45,7 @@ public class CompositeIterator<T> implements java.util.Iterator<T> {
      * @return the iterators.
      */
     public List<java.util.Iterator<T>> getIterators() {
-        return iterators;
+        return Collections.unmodifiableList(iterators);
     }
 
     public boolean hasNext() {

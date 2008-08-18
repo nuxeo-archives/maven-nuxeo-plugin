@@ -21,9 +21,12 @@ package org.nuxeo.build.utils;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class Patterns {
+
+    private Patterns() {
+    }
 
     public static boolean matchPattern(String name, char[] pattern) {
         return matchPattern(name.toCharArray(), pattern);
@@ -37,8 +40,8 @@ public class Patterns {
             char[] pattern) {
         int i = offset;
         boolean wildcard = false;
-        int k = 0;
-        for (; k < pattern.length; k++) {
+        int k;
+        for (k=0; k < pattern.length; k++) {
             char c = pattern[k];
             switch (c) {
             case '*':
@@ -55,8 +58,9 @@ public class Patterns {
                         }
                     }
                     if (i == len) {
-                        if (k < pattern.length - 1)
+                        if (k < pattern.length - 1) {
                             return false;
+                        }
                         return true;
                     }
                     wildcard = false;

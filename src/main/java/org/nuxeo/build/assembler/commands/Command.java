@@ -29,31 +29,31 @@ import org.apache.maven.project.MavenProject;
  */
 public interface Command {
 
-    public final static String RESOURCE_SETS = "resourceSets";
+    String RESOURCE_SETS = "resourceSets";
 
-    public final static String OUTPUT_DIRECTORY = "outputDirectory";
+    String OUTPUT_DIRECTORY = "outputDirectory";
 
-    public static final String ASSEMBLY_FILE = "assemblyFile";
+    String ASSEMBLY_FILE = "assemblyFile";
 
-    public static final String BUILDER = "builder";
+    String BUILDER = "builder";
 
-    public static final String LOG = "log";
+    String LOG = "log";
 
-    public static final String RESOLVER = "resolver";
+    String RESOLVER = "resolver";
 
-    public static final String PROJECT = "project";
+    String PROJECT = "project";
 
-    public static final String MOJO = "mojo";
+    String MOJO = "mojo";
 
-    public static final String REPOSITORY = "repository";
+    String REPOSITORY = "repository";
 
-    public static final String FACTORY = "factory";
+    String FACTORY = "factory";
 
-    public static final String METADATA_SOURCE = "metadataSource";
+    String METADATA_SOURCE = "metadataSource";
 
-    public static final String COLLECTOR = "collector";
+    String COLLECTOR = "collector";
 
-    public void execute(MavenProject project, Map<Object, Object> context)
+    void execute(MavenProject mavenProject, Map<Object, Object> context)
             throws Exception;
 
 }

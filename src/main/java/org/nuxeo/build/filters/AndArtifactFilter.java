@@ -22,21 +22,18 @@ package org.nuxeo.build.filters;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import java.util.Collections;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.InversionArtifactFilter;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class AndArtifactFilter implements ArtifactFilter {
 
     Collection<ArtifactFilter> filters = new ArrayList<ArtifactFilter>();
-
-    public AndArtifactFilter() {
-
-    }
 
     public boolean include(Artifact artifact) {
         for (ArtifactFilter filter : filters) {
@@ -55,7 +52,7 @@ public class AndArtifactFilter implements ArtifactFilter {
      * @return the filters.
      */
     public Collection<ArtifactFilter> getFilters() {
-        return filters;
+        return Collections.unmodifiableCollection(filters);
     }
 
     public OrArtifactFilter invert() {

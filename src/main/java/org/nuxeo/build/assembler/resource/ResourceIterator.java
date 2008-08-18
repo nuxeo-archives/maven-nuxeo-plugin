@@ -23,17 +23,17 @@ import java.util.Iterator;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public abstract class ResourceIterator<T> implements Iterator<Resource> {
 
     private Iterator<T> it;
 
-    public ResourceIterator(Iterable<T> it) {
+    protected ResourceIterator(Iterable<T> it) {
         this(it.iterator());
     }
 
-    public ResourceIterator(Iterator<T> it) {
+    protected ResourceIterator(Iterator<T> it) {
         this.it = it;
     }
 
@@ -45,6 +45,7 @@ public abstract class ResourceIterator<T> implements Iterator<Resource> {
         it.remove();
     }
 
+    // ESCA-JAVA0277:
     public Resource next() {
         return adapt(it.next());
     }

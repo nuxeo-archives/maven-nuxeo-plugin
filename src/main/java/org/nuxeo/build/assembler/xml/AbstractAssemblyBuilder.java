@@ -34,10 +34,6 @@ public abstract class AbstractAssemblyBuilder {
 
     public abstract Assembly parse(InputStream in) throws Exception;
 
-    public AbstractAssemblyBuilder() {
-        super();
-    }
-
     public Assembly parse(File file) throws Exception {
         InputStream in = new BufferedInputStream(new FileInputStream(file));
         try {

@@ -37,8 +37,8 @@ import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
  */
 public class ManifestBundleCategoryPatternFilter extends AbstractPatternFilter {
 
-    public static String MANIFEST_BUNDLE_CATEGORY = "Bundle-Category";
-    public static String MANIFEST_BUNDLE_CATEGORY_TOKEN = ",";
+    public static final String MANIFEST_BUNDLE_CATEGORY = "Bundle-Category";
+    public static final String MANIFEST_BUNDLE_CATEGORY_TOKEN = ",";
 
     public ManifestBundleCategoryPatternFilter(String pattern,AbstractNuxeoAssembler mojo) {
         super(pattern,mojo);

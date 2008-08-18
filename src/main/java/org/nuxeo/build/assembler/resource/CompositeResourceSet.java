@@ -20,6 +20,7 @@
 package org.nuxeo.build.assembler.resource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,12 +31,6 @@ import java.util.List;
 public class CompositeResourceSet implements ResourceSet {
 
     List<Resource> resources = new ArrayList<Resource>();
-
-    /**
-     *
-     */
-    public CompositeResourceSet() {
-    }
 
     public void add(ResourceSet set) {
         for (Resource res : set) {
@@ -52,7 +47,15 @@ public class CompositeResourceSet implements ResourceSet {
     }
 
     public List<Resource> getResources() {
-        return resources;
+        return Collections.unmodifiableList(resources);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer toStringBuffer = new StringBuffer();
+        toStringBuffer.append("{" +  getResources().size()
+                + " resources=" + getResources());
+        return toStringBuffer.toString();
     }
 
 }

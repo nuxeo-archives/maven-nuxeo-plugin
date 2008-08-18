@@ -32,10 +32,10 @@ import java.io.InputStream;
  */
 public interface Resource {
 
-    public String getName();
+    String getName();
 
-    public boolean isFile();
+    boolean isFile();
 
-    public InputStream getStream() throws IOException;
+    InputStream getStream() throws IOException;
 
 }

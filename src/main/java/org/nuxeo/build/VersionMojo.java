@@ -1,10 +1,5 @@
 package org.nuxeo.build;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -33,9 +28,9 @@ public class VersionMojo extends AbstractMojo {
      * @throws MojoExecutionException, MojoFailureException
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
-        String version = project.getVersion();
+        final String version = project.getVersion();
         if (version.length() > 1) {
-            String eclipseVersion = executeMojo(version);
+            final String eclipseVersion = executeMojo(version);
             project.getProperties().setProperty("eclipseVersion",
                     eclipseVersion);
             getLog().info("eclipseVersion:" + eclipseVersion);
@@ -48,13 +43,13 @@ public class VersionMojo extends AbstractMojo {
      * @param version String to transform
      * @return
      */
-    public String executeMojo(String version) {
+    public String executeMojo(final String version) {
         String eclipseVersion;
-        String[] versionSplitted = version.split("^(\\d+\\.)+\\d*");
+        final String[] versionSplitted = version.split("^(\\d+\\.)+\\d*");
         String trailingTag = (versionSplitted.length>0)?versionSplitted[versionSplitted.length - 1]:null;
 
         if (trailingTag!=null) {
-            int tagIdx = version.indexOf(trailingTag);
+            final int tagIdx = version.indexOf(trailingTag);
             eclipseVersion = version.substring(0, tagIdx);
             trailingTag=trailingTag.replace(".", "_");
         } else {
@@ -70,7 +65,7 @@ public class VersionMojo extends AbstractMojo {
         return eclipseVersion;
     }
 
-    private String format(String shortVersion, String trailingTag) {
+    private static String format(final String shortVersion, final String trailingTag) {
         // test if it's a "branch" version x.y.z or "trunk" version x.y
         if (shortVersion.matches("^(\\d+\\.){3}.*")) {
             return shortVersion;

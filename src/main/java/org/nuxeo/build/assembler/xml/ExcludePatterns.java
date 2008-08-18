@@ -29,6 +29,7 @@ import org.nuxeo.common.xmap.annotation.XObject;
 @XObject("excludes")
 public class ExcludePatterns extends FilePathPatterns {
 
+    // ESCA-JAVA0059:
     /**
      * @param patterns the patterns to set.
      */

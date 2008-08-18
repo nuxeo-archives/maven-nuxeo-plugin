@@ -31,7 +31,10 @@ import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
  */
 public class PatternFilterFactory {
 
-    public static ArtifactFilter createGroupFilter(String pattern) {
+    private PatternFilterFactory() {
+    }
+
+    public static ArtifactFilter createGroupFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new GroupPatternFilter(
@@ -42,7 +45,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createNameFilter(String pattern) {
+    public static ArtifactFilter createNameFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new ArtifactIdPatternFilter(
@@ -53,7 +56,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createTypeFilter(String pattern) {
+    public static ArtifactFilter createTypeFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new TypePatternFilter(
@@ -64,7 +67,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createVersionFilter(String pattern) {
+    public static ArtifactFilter createVersionFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new VersionPatternFilter(
@@ -75,7 +78,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createClassifierFilter(String pattern) {
+    public static ArtifactFilter createClassifierFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new ClassifierPatternFilter(
@@ -86,7 +89,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createScopeFilter(String pattern) {
+    public static ArtifactFilter createScopeFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new ScopePatternFilter(
@@ -97,7 +100,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createFileFilter(String pattern) {
+    public static ArtifactFilter createFileFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new FilePatternFilter(
@@ -108,7 +111,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createTrailFilter(String pattern) {
+    public static ArtifactFilter createTrailFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new TrailPatternFilter(
@@ -119,7 +122,7 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createIdFilter(String pattern) {
+    public static ArtifactFilter createIdFilter(final String pattern) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(new IdPatternFilter(
@@ -130,8 +133,8 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createBundleCategoryFilter(String pattern,
-            AbstractNuxeoAssembler mojo) {
+    public static ArtifactFilter createBundleCategoryFilter(final String pattern,
+            final AbstractNuxeoAssembler mojo) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(
@@ -143,8 +146,8 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createDependsOnCategoryFilter(String pattern,
-            AbstractNuxeoAssembler mojo) {
+    public static ArtifactFilter createDependsOnCategoryFilter(final String pattern,
+            final AbstractNuxeoAssembler mojo) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(
@@ -156,8 +159,8 @@ public class PatternFilterFactory {
         return filter;
     }
 
-    public static ArtifactFilter createDependencyRequiredFilter(String pattern,
-            AbstractNuxeoAssembler mojo) {
+    public static ArtifactFilter createDependencyRequiredFilter(final String pattern,
+            final AbstractNuxeoAssembler mojo) {
         ArtifactFilter filter = null;
         if (pattern.startsWith("!")) {
             filter = new InversionArtifactFilter(
@@ -185,8 +188,8 @@ public class PatternFilterFactory {
      *         {@link DependsOnCategoryPatternFilter},
      *         {@link DependencyRequiredPatternFilter}
      */
-    public static ArtifactFilter createCategoryFilter(String pattern,
-            AbstractNuxeoAssembler mojo) {
+    public static ArtifactFilter createCategoryFilter(final String pattern,
+            final AbstractNuxeoAssembler mojo) {
         return new CategoryFilter(pattern, mojo);
     }
 

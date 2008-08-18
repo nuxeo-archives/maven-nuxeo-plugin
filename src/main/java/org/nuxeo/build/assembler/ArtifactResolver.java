@@ -65,6 +65,7 @@ public class ArtifactResolver {
             org.apache.maven.artifact.resolver.ArtifactResolver resolver,
             ArtifactFactory factory) {
         this.local = local;
+        // ESCA-JAVA0256:
         this.remoteRepos = remoteRepos;
         this.factory = factory;
         this.resolver = resolver;
@@ -77,27 +78,27 @@ public class ArtifactResolver {
 
     public Artifact resolve(ArtifactDescriptor ad, String scope)
             throws MojoExecutionException {
-        if (ad.group == null || ad.name == null) {
+        if (ad.getGroup() == null || ad.getName() == null) {
             throw new MojoExecutionException(
                     "Invalid artifact descriptor. It should contains at least the groupId and artifactId");
         }
-        if (ad.scope == null) {
-            ad.scope = scope;
+        if (ad.getScope() == null) {
+            ad.setScope(scope);
         }
-        if (ad.type == null) {
-            ad.type = "jar";
+        if (ad.getType() == null) {
+            ad.setType("jar");
         }
         VersionRange vr = null;
-        if (ad.version != null) {
+        if (ad.getVersion() != null) {
             try {
-                vr = VersionRange.createFromVersionSpec(ad.version);
+                vr = VersionRange.createFromVersionSpec(ad.getVersion());
             } catch (InvalidVersionSpecificationException e) {
                 e.printStackTrace();
-                vr = VersionRange.createFromVersion(ad.version);
+                vr = VersionRange.createFromVersion(ad.getVersion());
             }
         }
-        Artifact artifact = factory.createDependencyArtifact(ad.group, ad.name,
-                vr, ad.type, ad.classifier, ad.scope);
+        Artifact artifact = factory.createDependencyArtifact(ad.getGroup(), ad.getName(),
+                vr, ad.getType(), ad.getClassifier(), ad.getScope());
         try {
             resolver.resolve(artifact, remoteRepos, local);
         } catch (ArtifactResolutionException e) {

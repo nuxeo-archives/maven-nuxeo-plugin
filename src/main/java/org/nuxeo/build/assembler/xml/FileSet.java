@@ -223,7 +223,7 @@ public class FileSet extends FileResourceSet {
     public Iterator<Resource> iterator() {
         String prefix = new File(mojo.getBasedir(), directory).getAbsolutePath();
         if (!prefix.endsWith("/")) {
-            prefix = prefix + "/";
+            prefix += "/";
         }
         final int off = prefix.length();
         return new ResourceIterator<File>(fileIterator()) {

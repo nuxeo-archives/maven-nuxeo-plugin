@@ -52,6 +52,7 @@ public class Node {
     }
 
     public Collection<Node> getChildren() {
+        // ESCA-JAVA0259:
         return children;
     }
 
@@ -80,8 +81,9 @@ public class Node {
     @SuppressWarnings("unchecked")
     public String[] getDependencyTrail() {
         List<String> trail = artifact.getDependencyTrail();
-        if (trail == null)
+        if (trail == null) {
             return null;
+        }
         String[] ar = new String[trail.size()];
         for (int i = 0; i < ar.length; i++) {
             ar[i] = trail.get(i);
@@ -92,8 +94,9 @@ public class Node {
     @SuppressWarnings("unchecked")
     public Node[] getParents() {
         List<String> trail = artifact.getDependencyTrail();
-        if (trail == null)
+        if (trail == null) {
             return null;
+        }
         Node[] ar = new Node[trail.size()];
         for (int i = 0; i < ar.length; i++) {
             ar[i] = nodes.get(trail.get(i));

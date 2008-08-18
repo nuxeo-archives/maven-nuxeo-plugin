@@ -195,10 +195,6 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
     // extends project properties
     private Properties props;
 
-    public AbstractNuxeoAssembler() {
-        super();
-    }
-
     public Map<String, ResourceSet> getResourceSetMap() {
         return resourceSets;
     }
@@ -215,6 +211,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
     }
 
 
+    @SuppressWarnings("unchecked")
     public boolean isProfileActivated(String id) {
         List<Profile> profiles = project.getActiveProfiles();
         for (Profile p : profiles) {
@@ -367,7 +364,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * returns resolved artifact from project
-     * @param dependency
+     * @param artifact
      * @return
      */
     @SuppressWarnings("unchecked")

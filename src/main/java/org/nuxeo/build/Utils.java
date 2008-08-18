@@ -26,10 +26,13 @@ import org.apache.maven.artifact.Artifact;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public abstract class Utils {
+
+    private Utils() {
+    }
 
     public static void printArtifactTrail(Artifact artifact) {
         printArtifactTrail(artifact, "  ");

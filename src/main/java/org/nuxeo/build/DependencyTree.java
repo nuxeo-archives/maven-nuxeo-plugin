@@ -5,10 +5,10 @@ import java.util.Map;
 
 public interface DependencyTree {
 
-    public abstract Node getRoot();
+    Node getRoot();
 
-    public abstract Node getNode(String id);
+    Node getNode(String id);
 
-    public abstract Map<String, Node> getNodes();
+    Map<String, Node> getNodes();
 
 }

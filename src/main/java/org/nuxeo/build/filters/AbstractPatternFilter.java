@@ -34,28 +34,28 @@ public abstract class AbstractPatternFilter implements ArtifactFilter {
 
     protected abstract String getValueToMatch(Artifact artifact);
 
-    public AbstractPatternFilter(String pattern) {
+    protected AbstractPatternFilter(String pattern) {
         this(pattern.toCharArray());
     }
 
-    public AbstractPatternFilter(char[] pattern) {
-        this.pattern = pattern;
+    protected AbstractPatternFilter(final char[] pattern) {
+        this.pattern = pattern.clone();
     }
 
-    public AbstractPatternFilter(String pattern, AbstractNuxeoAssembler mojo) {
+    protected AbstractPatternFilter(String pattern, AbstractNuxeoAssembler mojo) {
         this(pattern.toCharArray(),mojo);
     }
 
-    public AbstractPatternFilter(char[] pattern, AbstractNuxeoAssembler mojo) {
-        this.pattern=pattern;
+    protected AbstractPatternFilter(final char[] pattern, AbstractNuxeoAssembler mojo) {
+        this.pattern=pattern.clone();
         this.mojo=mojo;
     }
 
     /**
      * @param pattern the pattern to set.
      */
-    public void setPattern(char[] pattern) {
-        this.pattern = pattern;
+    public void setPattern(final char[] pattern) {
+        this.pattern = pattern.clone();
     }
 
     public void setPattern(String pattern) {
@@ -66,7 +66,7 @@ public abstract class AbstractPatternFilter implements ArtifactFilter {
      * @return the pattern.
      */
     public char[] getPattern() {
-        return pattern;
+        return pattern.clone();
     }
 
     public boolean include(Artifact artifact) {

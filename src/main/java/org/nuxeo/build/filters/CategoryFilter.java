@@ -19,7 +19,6 @@
 
 package org.nuxeo.build.filters;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
 
@@ -44,7 +43,6 @@ public class CategoryFilter extends OrArtifactFilter implements ArtifactFilter {
     AbstractNuxeoAssembler mojo;
 
     public CategoryFilter(String pattern, AbstractNuxeoAssembler mojo) {
-        super();
         this.mojo = mojo;
         add(PatternFilterFactory.createDependsOnCategoryFilter(pattern, mojo));
         add(PatternFilterFactory.createBundleCategoryFilter(pattern, mojo));
@@ -54,18 +52,17 @@ public class CategoryFilter extends OrArtifactFilter implements ArtifactFilter {
         // add(dependencyRequiredFilter);
     }
 
-    @Override
-    public boolean include(Artifact artifact) {
-        return super.include(artifact);
-        // for (ArtifactFilter filter : filters) {
-        // if (filter.include(artifact)) {
-        // if (!(filter instanceof DependencyRequiredPatternFilter)) {
-        // dependencyRequiredFilter.add(mojo.getArtifactDependencies(artifact));
-        // }
-        // return true;
-        // }
-        // }
-        // return false;
-    }
+    // @Override
+    // public boolean include(Artifact artifact) {
+    // for (ArtifactFilter filter : filters) {
+    // if (filter.include(artifact)) {
+    // if (!(filter instanceof DependencyRequiredPatternFilter)) {
+    // dependencyRequiredFilter.add(mojo.getArtifactDependencies(artifact));
+    // }
+    // return true;
+    // }
+    // }
+    // return false;
+    // }
 
 }

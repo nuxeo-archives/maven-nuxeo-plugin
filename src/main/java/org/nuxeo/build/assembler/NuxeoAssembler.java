@@ -29,25 +29,25 @@ import org.nuxeo.build.assembler.resource.ResourceSet;
 
 public interface NuxeoAssembler extends Mojo {
 
-    public abstract Map<String, ResourceSet> getResourceSetMap();
+    Map<String, ResourceSet> getResourceSetMap();
 
-    public abstract MavenProject getProject();
+    MavenProject getProject();
 
-    public abstract Object getArtifactResolver();
+    Object getArtifactResolver();
 
-    public abstract String getOutputDirectory();
+    String getOutputDirectory();
 
-    public abstract File getBasedir();
+    File getBasedir();
 
-    public abstract String getTargetFileName();
+    String getTargetFileName();
 
-    public abstract boolean isRunPreprocessor();
+    boolean isRunPreprocessor();
 
-    public abstract String getFormat();
+    String getFormat();
 
-    public abstract String getZipRoot();
+    String getZipRoot();
 
-    public abstract boolean isProfileActivated(String id);
+    boolean isProfileActivated(String id);
 
-    public Properties getProperties();
+    Properties getProperties();
 }

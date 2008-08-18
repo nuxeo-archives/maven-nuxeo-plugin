@@ -24,13 +24,14 @@ import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
  * Descriptor for includes element
- * 
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 @XObject("includes")
 public class IncludePatterns extends FilePathPatterns {
 
+    // ESCA-JAVA0059:
     @Override
     @XNodeList(value = "include", type = String[].class, componentType = String.class)
     public void setPatterns(String[] patterns) {

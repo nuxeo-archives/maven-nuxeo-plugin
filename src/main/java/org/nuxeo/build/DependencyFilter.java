@@ -58,9 +58,9 @@ public class DependencyFilter {
 
     private String trail;
 
-    private MavenProject project;
+    private final MavenProject project;
 
-    public DependencyFilter(MavenProject project) {
+    public DependencyFilter(final MavenProject project) {
         this.project = project;
     }
 
@@ -74,7 +74,7 @@ public class DependencyFilter {
     /**
      * @param transitive the transitive to set.
      */
-    public void setExcludeTransitive(boolean transitive) {
+    public void setExcludeTransitive(final boolean transitive) {
         this.excludeTransitive = transitive;
     }
 
@@ -88,7 +88,7 @@ public class DependencyFilter {
     /**
      * @param id the id to set.
      */
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -102,7 +102,7 @@ public class DependencyFilter {
     /**
      * @param group the group to set.
      */
-    public void setGroup(String group) {
+    public void setGroup(final String group) {
         this.group = group;
     }
 
@@ -116,7 +116,7 @@ public class DependencyFilter {
     /**
      * @param name the name to set.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -130,7 +130,7 @@ public class DependencyFilter {
     /**
      * @param version the version to set.
      */
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 
@@ -144,7 +144,7 @@ public class DependencyFilter {
     /**
      * @param type the type to set.
      */
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -158,7 +158,7 @@ public class DependencyFilter {
     /**
      * @param scope the scope to set.
      */
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = scope;
     }
 
@@ -172,7 +172,7 @@ public class DependencyFilter {
     /**
      * @param classifier the classifier to set.
      */
-    public void setClassifier(String classifier) {
+    public void setClassifier(final String classifier) {
         this.classifier = classifier;
     }
 
@@ -186,7 +186,7 @@ public class DependencyFilter {
     /**
      * @param file the file to set.
      */
-    public void setFileName(String file) {
+    public void setFileName(final String file) {
         this.fileName = file;
     }
 
@@ -200,54 +200,54 @@ public class DependencyFilter {
     /**
      * @param trail the trail to set.
      */
-    public void setTrail(String trail) {
+    public void setTrail(final String trail) {
         this.trail = trail;
     }
 
     /**
      * @param filter the filter to set.
      */
-    public void setFilter(ArtifactFilter filter) {
+    public void setFilter(final ArtifactFilter filter) {
         this.filter = filter;
     }
 
     public ArtifactFilter getFilter() {
         if (filter == null) {
-            AndArtifactFilter andFilter = new AndArtifactFilter();
+            final AndArtifactFilter andFilter = new AndArtifactFilter();
             if (id != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createIdFilter(id);
+                final ArtifactFilter theFilter = PatternFilterFactory.createIdFilter(id);
                 andFilter.add(theFilter);
             }
             if (group != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createGroupFilter(group);
+                final ArtifactFilter theFilter = PatternFilterFactory.createGroupFilter(group);
                 andFilter.add(theFilter);
             }
             if (name != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createNameFilter(name);
+                final ArtifactFilter theFilter = PatternFilterFactory.createNameFilter(name);
                 andFilter.add(theFilter);
             }
             if (version != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createVersionFilter(version);
+                final ArtifactFilter theFilter = PatternFilterFactory.createVersionFilter(version);
                 andFilter.add(theFilter);
             }
             if (type != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createTypeFilter(type);
+                final ArtifactFilter theFilter = PatternFilterFactory.createTypeFilter(type);
                 andFilter.add(theFilter);
             }
             if (scope != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createScopeFilter(scope);
+                final ArtifactFilter theFilter = PatternFilterFactory.createScopeFilter(scope);
                 andFilter.add(theFilter);
             }
             if (classifier != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createClassifierFilter(classifier);
+                final ArtifactFilter theFilter = PatternFilterFactory.createClassifierFilter(classifier);
                 andFilter.add(theFilter);
             }
             if (fileName != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createFileFilter(fileName);
+                final ArtifactFilter theFilter = PatternFilterFactory.createFileFilter(fileName);
                 andFilter.add(theFilter);
             }
             if (trail != null) {
-                ArtifactFilter theFilter = PatternFilterFactory.createTrailFilter(trail);
+                final ArtifactFilter theFilter = PatternFilterFactory.createTrailFilter(trail);
                 andFilter.add(theFilter);
             }
 
@@ -276,9 +276,9 @@ public class DependencyFilter {
      * @param artifacts
      * @return
      */
-    public Collection<Artifact> applyFilters(Collection<Artifact> artifacts) {
-        ArrayList<Artifact> result = new ArrayList<Artifact>();
-        for (Artifact artifact : artifacts) {
+    public Collection<Artifact> applyFilters(final Collection<Artifact> artifacts) {
+        final ArrayList<Artifact> result = new ArrayList<Artifact>();
+        for (final Artifact artifact : artifacts) {
             if (getFilter().include(artifact)) {
                 result.add(artifact);
             }
@@ -292,7 +292,7 @@ public class DependencyFilter {
      * @param artifact
      * @return
      */
-    public boolean accept(Artifact artifact) {
+    public boolean accept(final Artifact artifact) {
         return getFilter().include(artifact);
     }
 
@@ -306,13 +306,14 @@ public class DependencyFilter {
      * @return
      * @throws IllegalArgumentException if excluded collection arg is null
      */
-    public Collection<Artifact> applyFilters(Collection<Artifact> artifacts,
-            Collection<Artifact> excluded) {
-        if (excluded == null)
+    public Collection<Artifact> applyFilters(final Collection<Artifact> artifacts,
+            final Collection<Artifact> excluded) {
+        if (excluded == null) {
             throw new IllegalArgumentException(
                     "excluded argument should not be null ");
-        ArrayList<Artifact> result = new ArrayList<Artifact>();
-        for (Artifact artifact : artifacts) {
+        }
+        final ArrayList<Artifact> result = new ArrayList<Artifact>();
+        for (final Artifact artifact : artifacts) {
             if (getFilter().include(artifact)) {
                 result.add(artifact);
             } else {
