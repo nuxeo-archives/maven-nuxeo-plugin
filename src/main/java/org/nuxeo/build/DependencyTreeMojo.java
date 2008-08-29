@@ -123,7 +123,7 @@ public class DependencyTreeMojo extends AbstractMojo {
         ctx.setProperty(Command.FACTORY, getArtifactFactory());
         ctx.setProperty(Command.METADATA_SOURCE, getArtifactMetadataSource());
         ctx.setProperty(Command.COLLECTOR, getArtifactCollector());
-        ctx.setProperty(Command.LOG, getLog());
+//        ctx.setProperty(Command.LOG, getLog());
 
         DependencyTree tree = new DependencyTreeFull(ctx);
         Node root = tree.getRoot();

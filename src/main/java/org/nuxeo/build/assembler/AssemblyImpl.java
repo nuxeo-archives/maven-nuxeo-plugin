@@ -62,7 +62,7 @@ public class AssemblyImpl implements Assembly {
     // groupId:artifactId:type:classifier:version
     private Map<String, Artifact> artifactIdMap;
 
-    private Log log;
+    private Log log=AbstractNuxeoAssembler.getLogger();
 
     private static String FORMAT_SEPARATOR = ",";
 
@@ -70,20 +70,6 @@ public class AssemblyImpl implements Assembly {
         this.mojo = assembler;
         this.project = assembler.getProject();
         this.descriptor = descriptor;
-    }
-
-    /**
-     * @param log the log to set.
-     */
-    public void setLog(Log log) {
-        this.log = log;
-    }
-
-    /**
-     * @return the log.
-     */
-    public Log getLog() {
-        return log;
     }
 
     @SuppressWarnings("unchecked")
@@ -215,11 +201,13 @@ public class AssemblyImpl implements Assembly {
             for (FileSet set : fileSets) {
                 String profile = set.getProfile();
                 if (profile != null && !mojo.isProfileActivated(profile)) {
-                    log.info("Ignoring set: " + set.getId() + ". requires profile: "+profile);
+                    log.info("Ignoring set: " + set.getId()
+                            + ". requires profile: " + profile);
                     continue;
                 }
                 String id = set.getId();
-                log.info("Processing set: " + id + " [profile: "+profile+"]");
+                log.info("Processing set: " + id + " [profile: " + profile
+                        + "]");
                 if (id != null) {
                     setMap.put(id, set);
                 }
@@ -231,11 +219,13 @@ public class AssemblyImpl implements Assembly {
             for (ZipEntrySet set : zipEntrySets) {
                 String profile = set.getProfile();
                 if (profile != null && !mojo.isProfileActivated(profile)) {
-                    log.info("Ignoring set: " + set.getId() + ". requires profile: "+profile);
+                    log.info("Ignoring set: " + set.getId()
+                            + ". requires profile: " + profile);
                     continue;
                 }
                 String id = set.getId();
-                log.info("Processing set: " + id + " [profile: "+profile+"]");
+                log.info("Processing set: " + id + " [profile: " + profile
+                        + "]");
                 if (id != null) {
                     setMap.put(id, set);
                 }
@@ -247,12 +237,15 @@ public class AssemblyImpl implements Assembly {
             log.info("Processing artifact sets");
             for (ArtifactSet set : artifactSets) {
                 String profile = set.getProfile();
-                if (profile != null && !mojo.isProfileActivated(set.getProfile())) {
-                    log.info("Ignoring set: " + set.getId() + ". requires profile: "+profile);
+                if (profile != null
+                        && !mojo.isProfileActivated(set.getProfile())) {
+                    log.info("Ignoring set: " + set.getId()
+                            + ". requires profile: " + profile);
                     continue;
                 }
                 String id = set.getId();
-                log.info("Processing set: " + id + " [profile: "+profile+"]");
+                log.info("Processing set: " + id + " [profile: " + profile
+                        + "]");
                 if (id != null) {
                     setMap.put(id, set);
                 } else {
@@ -273,15 +266,15 @@ public class AssemblyImpl implements Assembly {
                         setMap.put(extendsSetId, set);
                     }
                 }
-                log.debug(id+": "+set.getArtifacts());
+                log.debug(id + ": " + set.getArtifacts());
             }
         }
 
         log.info("Processing servers sets...");
-//        for (ServerSet set : descriptor.getServersSet) {
-//            log.info("Collecting " + set + " components...");
-//            setMap.put(set.getId(), set);
-//        }
+        // for (ServerSet set : descriptor.getServersSet) {
+        // log.info("Collecting " + set + " components...");
+        // setMap.put(set.getId(), set);
+        // }
 
         // run commands
         log.info("Running assemble commands");
@@ -299,7 +292,7 @@ public class AssemblyImpl implements Assembly {
             } catch (Exception e) {
                 throw new MojoExecutionException("Preprocessing Failed", e);
             }
-            System.out.println("Preprocessing done.");
+            log.info("Preprocessing done.");
         }
 
         // package the directory that was build and create the target file
@@ -316,7 +309,7 @@ public class AssemblyImpl implements Assembly {
         String formats = mojo.getFormat();
         for (String pack : formats.split(FORMAT_SEPARATOR)) {
             if ("zip".equals(pack)) { // only zip format is supported for now
-                                        // (except directory)
+                // (except directory)
                 File targetFileZiped = new File(targetFile.getParentFile(),
                         targetFile.getName() + ".zip");
                 if (prefix != null) {
@@ -326,7 +319,7 @@ public class AssemblyImpl implements Assembly {
                 }
                 log.info("Zipped target to: " + targetFileZiped);
             } else { // should be "directory" but accept anything else than
-                        // zip
+                // zip
                 FileUtils.copyTree(targetDir, targetFile);
                 log.info("Copied target to: " + targetFile);
             }

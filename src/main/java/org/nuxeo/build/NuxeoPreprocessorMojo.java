@@ -24,15 +24,15 @@ import org.nuxeo.runtime.jboss.deployment.preprocessor.DeploymentPreprocessor;
 
 /**
  * Goal whih preprocess a nuxeo EAR
- * 
+ *
  * @goal preprocess
- * 
+ *
  * @phase package
  */
 public class NuxeoPreprocessorMojo extends AbstractMojo {
     /**
      * Location of the file.
-     * 
+     *
      * @parameter expression="${project.build.directory}/nuxeo.ear"
      * @required
      */
@@ -45,7 +45,7 @@ public class NuxeoPreprocessorMojo extends AbstractMojo {
             throw new MojoExecutionException("No EAR to preprocess: " + f);
         }
 
-        System.out.println("Preprocessing: " + f);
+        getLog().info("Preprocessing: " + f);
         DeploymentPreprocessor processor = new DeploymentPreprocessor(f);
         try {
             // initialize
@@ -55,7 +55,7 @@ public class NuxeoPreprocessorMojo extends AbstractMojo {
         } catch (Exception e) {
             throw new MojoExecutionException("Preprocessing Failed", e);
         }
-        System.out.println("Preprocessing done.");
+        getLog().info("Preprocessing done.");
     }
 
 }

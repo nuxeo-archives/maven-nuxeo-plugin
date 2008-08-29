@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
 import org.nuxeo.build.assembler.resource.CompositeResourceSet;
@@ -51,9 +50,6 @@ public class AssembleCommand implements Command {
     // ESCA-JAVA0244:
     @XContext("mojo")
     private AbstractNuxeoAssembler mojo;
-
-    @XContext("log")
-    private Log log;
 
     @XNodeList(value = "file", type = String[].class, componentType = String.class)
     private String[] files;
@@ -212,13 +208,13 @@ public class AssembleCommand implements Command {
             File toFile = new File(outDir, res.getName());
             if (!res.isFile()) {
                 toFile.mkdirs();
-                log.debug("Skipping resource (directory) " + res.getName());
+                mojo.getLog().debug("Skipping resource (directory) " + res.getName());
                 continue; // a directory
             }
             toFile.getParentFile().mkdirs();
             InputStream in = res.getStream();
             try {
-                log.info("Copying " + res.getName() + " to " + toFile.getPath());
+                mojo.getLog().info("Copying " + res.getName() + " to " + toFile.getPath());
                 FileUtils.copyToFile(in, toFile);
             } finally {
                 in.close();
@@ -232,7 +228,7 @@ public class AssembleCommand implements Command {
                 throw new Error("Only File Resources can be used on remove command");
             }
             File file = new File(outDir, res.getName());
-            log.info("Deleting " + file.getAbsolutePath());
+            mojo.getLog().info("Deleting " + file.getAbsolutePath());
             if (file.isFile()) {
                 file.delete();
             } else {
@@ -248,7 +244,7 @@ public class AssembleCommand implements Command {
                 if (!res.isFile()) {
                     continue;
                 }
-                log.info("Compressing " + res.getName() + " to "
+                mojo.getLog().info("Compressing " + res.getName() + " to "
                         + file.getPath());
                 ZipUtils._zip(res.getName(), res.getStream(), zout);
             }
@@ -261,7 +257,7 @@ public class AssembleCommand implements Command {
         for (Resource res : set) {
             File target = unpackInNewDirectory ? new File(dir, res.getName())
                     : dir;
-            log.info("Uncompressing " + res.getName() + " to "
+            mojo.getLog().info("Uncompressing " + res.getName() + " to "
                     + target.getPath());
             ZipUtils.unzip(res.getStream(), target);
         }

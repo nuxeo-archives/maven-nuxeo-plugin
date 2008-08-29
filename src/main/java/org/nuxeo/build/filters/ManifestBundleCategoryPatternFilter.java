@@ -54,7 +54,8 @@ public class ManifestBundleCategoryPatternFilter extends AbstractPatternFilter {
         if (file==null) {
             if (artifact.isResolved()) {
                 mojo.getLog().warn("Artifact "+artifact+" doesn't contain a file");
-            } else {
+            } else if (!artifact.SCOPE_PROVIDED.equals(artifact.getScope())) {
+                // ignore provided artifacts; raise a warning for non provided
                 mojo.getLog().warn("Artifact "+artifact+" unresolved");
             }
             return valuesToMatch;

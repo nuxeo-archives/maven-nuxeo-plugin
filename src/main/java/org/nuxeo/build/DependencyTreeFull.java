@@ -27,16 +27,17 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactCollector;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
+import org.nuxeo.build.assembler.AbstractNuxeoAssembler;
 import org.nuxeo.build.assembler.commands.Command;
 import org.nuxeo.common.xmap.Context;
 
 /**
  * Builds full tree (parents know all their children and reciprocally)
+ *
  * @author jcarsique
  *
  */
@@ -45,7 +46,8 @@ public class DependencyTreeFull extends DependencyTreeImpl {
     @SuppressWarnings("deprecation")
     public DependencyTreeFull(Context ctx) {
         nodes = new HashMap<String, Node>();
-        log=(Log) ctx.getProperty(Command.LOG);
+        // log=(Log) ctx.getProperty(Command.LOG);
+        log = AbstractNuxeoAssembler.getLogger();
 
         setRoot(ctx);
     }
@@ -53,7 +55,7 @@ public class DependencyTreeFull extends DependencyTreeImpl {
     protected void setRoot(Context ctx) {
         DependencyNode rootDependencyNode = null;
         try {
-            DependencyTreeBuilder dependencyTreeBuilder=(DependencyTreeBuilder) ctx.getProperty(Command.BUILDER);
+            DependencyTreeBuilder dependencyTreeBuilder = (DependencyTreeBuilder) ctx.getProperty(Command.BUILDER);
             rootDependencyNode = dependencyTreeBuilder.buildDependencyTree(
                     (MavenProject) ctx.getProperty(Command.PROJECT),
                     (ArtifactRepository) ctx.getProperty(Command.REPOSITORY),
@@ -69,28 +71,30 @@ public class DependencyTreeFull extends DependencyTreeImpl {
 
     @SuppressWarnings("unchecked")
     private Node putNode(DependencyNode dependencyNode) {
-        if (dependencyNode==null) {
+        if (dependencyNode == null) {
             return null;
         }
         Node node;
         Artifact artifact = dependencyNode.getArtifact();
-        Node existingNode=nodes.get(artifact.getId());
-        if (existingNode!=null) {
-            node=existingNode;
+        Node existingNode = nodes.get(artifact.getId());
+        if (existingNode != null) {
+            node = existingNode;
         } else {
-            node=new Node(nodes, artifact);
+            node = new Node(nodes, artifact);
             nodes.put(artifact.getId(), node);
         }
-        Iterator<DependencyNode> childrenIterator=dependencyNode.iterator();
-        // skip first child (its first child is itself !); check this strange behavior
+        Iterator<DependencyNode> childrenIterator = dependencyNode.iterator();
+        // skip first child (its first child is itself !); check this strange
+        // behavior
         Artifact artifactItself = childrenIterator.next().getArtifact();
         if (!artifactItself.getId().equals(artifact.getId())) {
-            log.error("first child "+artifactItself+" different from artifact "+artifact);
+            log.error("first child " + artifactItself
+                    + " different from artifact " + artifact);
         }
         // add children to node
         while (childrenIterator.hasNext()) {
-            DependencyNode childNode= childrenIterator.next();
-                node.add(putNode(childNode));
+            DependencyNode childNode = childrenIterator.next();
+            node.add(putNode(childNode));
         }
         return node;
     }

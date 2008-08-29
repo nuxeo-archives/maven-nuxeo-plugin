@@ -37,6 +37,7 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.nuxeo.build.DependencyTree;
@@ -136,8 +137,8 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
     protected String format;
 
     /**
-     * Whether to use a prefix when compressing
-     * (the prefix determine the directory on the root of the zip package)
+     * Whether to use a prefix when compressing (the prefix determine the
+     * directory on the root of the zip package)
      *
      * @parameter expression="${zipRoot}"
      *
@@ -190,10 +191,18 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
      */
     protected File basedir;
 
-    private static int offset=0;
+    private static int offset = 0;
 
     // extends project properties
     private Properties props;
+
+    // a getter to maven logger
+    protected static final ThreadLocal<Log> localLogger = new ThreadLocal<Log>() {
+        @Override
+        protected Log initialValue() {
+            return null;
+        }
+    };
 
     public Map<String, ResourceSet> getResourceSetMap() {
         return resourceSets;
@@ -204,12 +213,11 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
      */
     public ArtifactResolver getArtifactResolver() {
         if (artifactResolver == null) {
-            artifactResolver = new ArtifactResolver(local,
+            artifactResolver = new ArtifactResolver(project,local,
                     remoteArtifactRepositories, resolver, factory);
         }
         return artifactResolver;
     }
-
 
     @SuppressWarnings("unchecked")
     public boolean isProfileActivated(String id) {
@@ -221,7 +229,6 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         }
         return false;
     }
-
 
     public File getBasedir() {
         return basedir;
@@ -275,20 +282,23 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
             Context ctx = new Context();
             ctx.setProperty(Command.MOJO, this);
             ctx.setProperty(Command.PROJECT, getProject());
-//            ctx.setProperty(Command.BUILDER, new DefaultDependencyTreeBuilder());
+            // ctx.setProperty(Command.BUILDER, new
+            // DefaultDependencyTreeBuilder());
             ctx.setProperty(Command.BUILDER, getDependencyTreeBuilder());
             ctx.setProperty(Command.REPOSITORY, local);
             ctx.setProperty(Command.FACTORY, factory);
-            ctx.setProperty(Command.METADATA_SOURCE, getArtifactMetadataSource());
+            ctx.setProperty(Command.METADATA_SOURCE,
+                    getArtifactMetadataSource());
             ctx.setProperty(Command.COLLECTOR, getArtifactCollector());
-            artifactResolver = new ArtifactResolver(local,
+            artifactResolver = new ArtifactResolver(project,local,
                     remoteArtifactRepositories, resolver, factory);
             ctx.setProperty(Command.RESOLVER, artifactResolver);
-            ctx.setProperty(Command.LOG, getLog());
+//            ctx.setProperty(Command.LOG, getLog());
 
             dependencyTree = new DependencyTreeFull(ctx);
-//            dependencyTree = new DefaultDependencyTreeBuilder().buildDependencyTree(project,
-//                    local, factory, null, null);
+            // dependencyTree = new
+            // DefaultDependencyTreeBuilder().buildDependencyTree(project,
+            // local, factory, null, null);
         }
         return dependencyTree;
     }
@@ -297,12 +307,12 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         HashSet<Artifact> result = null;
         DependencyTree tree = null;
         tree = getDependencyTree();
-        getLog().debug("search dependencies for "+artifact.getId());
+        getLog().debug("search dependencies for " + artifact.getId());
         Node artifactNode = tree.getNode(artifact.getId());
         if (artifactNode != null) {
             result = new HashSet<Artifact>();
             getLog().debug(artifactNode.getArtifact().toString());
-            Set<String> nodesKnown=new HashSet<String>();
+            Set<String> nodesKnown = new HashSet<String>();
             collectChildrenArtifacts(artifactNode, result, nodesKnown);
         }
         return result;
@@ -310,11 +320,11 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     private void collectChildrenArtifacts(Node root,
             Collection<Artifact> result, Set<String> nodesKnown) {
-        String offsetString="";
+        String offsetString = "";
         if (getLog().isDebugEnabled()) {
             offset++;
-            for (int i=0;i<offset;i++) {
-                offsetString+=" ";
+            for (int i = 0; i < offset; i++) {
+                offsetString += " ";
             }
         }
         /*
@@ -325,7 +335,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
             Artifact artifact = node.getArtifact();
             if (!nodesKnown.contains(artifact.getId())) {
                 result.add(artifact);
-                getLog().debug(offsetString+"=>"+artifact);
+                getLog().debug(offsetString + "=>" + artifact);
                 collectChildrenArtifacts(node, result, nodesKnown);
             }
         }
@@ -340,6 +350,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     public void execute(AssemblyBuilder assemblyBuilder)
             throws MojoExecutionException {
+        localLogger.set(getLog());
         File assemblyFile = new File(descriptor);
 
         // direct deps
@@ -350,7 +361,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         try {
             getLog().info("Loading assembly descriptor: " + descriptor);
             Assembly assembly = assemblyBuilder.parse(assemblyFile);
-            assembly.setLog(getLog());
+//            assembly.setLog(getLog());
             HashMap<Object, Object> context = new HashMap<Object, Object>();
             context.putAll(project.getProperties());
             context.put(Command.ASSEMBLY_FILE, assemblyFile);
@@ -364,24 +375,25 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * returns resolved artifact from project
+     *
      * @param artifact
      * @return
      */
     @SuppressWarnings("unchecked")
     public Artifact getArtifact(Artifact artifact) {
-        Artifact artifactFound=getArtifact(artifact.getId());
-        return artifactFound!=null?artifactFound:artifact;
+        Artifact artifactFound = getArtifact(artifact.getId());
+        return artifactFound != null ? artifactFound : artifact;
     }
 
     @SuppressWarnings("unchecked")
     public Artifact getArtifact(String artifactId) {
-        Artifact artifactFound=null;
+        Artifact artifactFound = null;
         Collection<Artifact> artifacts = getProject().getArtifacts();
         Iterator<Artifact> it = artifacts.iterator();
         while (it.hasNext()) {
-            Artifact artifactTemp=it.next();
+            Artifact artifactTemp = it.next();
             if (artifactId.equals(artifactTemp.getId())) {
-                artifactFound=artifactTemp;
+                artifactFound = artifactTemp;
                 break;
             }
         }
@@ -393,11 +405,15 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
             props = project.getProperties();
             props.put("project.version", project.getVersion());
             props.put("basedir", project.getBasedir());
-            props.put("outputDirectory", project.getBuild().getOutputDirectory());
+            props.put("outputDirectory",
+                    project.getBuild().getOutputDirectory());
             props.put("buildDirectory", project.getBuild().getDirectory());
         }
         return props;
     }
 
+    public static Log getLogger() {
+        return localLogger.get();
+    }
 
 }

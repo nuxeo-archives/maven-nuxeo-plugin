@@ -26,9 +26,12 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.artifact.AttachedArtifact;
 import org.nuxeo.build.assembler.xml.ArtifactDescriptor;
 
 /**
@@ -58,12 +61,16 @@ public class ArtifactResolver {
      */
     protected org.apache.maven.artifact.resolver.ArtifactResolver resolver;
 
+    private MavenProject project;
+
     /**
      *
      */
-    public ArtifactResolver(ArtifactRepository local, List<ArtifactRepository> remoteRepos,
+    public ArtifactResolver(MavenProject project, ArtifactRepository local,
+            List<ArtifactRepository> remoteRepos,
             org.apache.maven.artifact.resolver.ArtifactResolver resolver,
             ArtifactFactory factory) {
+        this.project = project;
         this.local = local;
         // ESCA-JAVA0256:
         this.remoteRepos = remoteRepos;
@@ -93,12 +100,24 @@ public class ArtifactResolver {
             try {
                 vr = VersionRange.createFromVersionSpec(ad.getVersion());
             } catch (InvalidVersionSpecificationException e) {
-                e.printStackTrace();
+                AbstractNuxeoAssembler.getLogger().error(e.getMessage());
                 vr = VersionRange.createFromVersion(ad.getVersion());
             }
         }
-        Artifact artifact = factory.createDependencyArtifact(ad.getGroup(), ad.getName(),
-                vr, ad.getType(), ad.getClassifier(), ad.getScope());
+        // look up project's attached artifacts
+        Artifact artifact = resolveFromAttachedArtifacts(ad.getGroup(),
+                ad.getName(), vr, ad.getType(), ad.getClassifier());
+        if (artifact != null) {
+            AbstractNuxeoAssembler.getLogger().debug(
+                    "comparison: " + artifact.equals(factory.createDependencyArtifact(ad.getGroup(),
+                            ad.getName(), vr, ad.getType(), ad.getClassifier(),
+                            ad.getScope())));
+            return artifact;
+        }
+        // use maven resolution
+        artifact = factory.createDependencyArtifact(ad.getGroup(),
+                ad.getName(), vr, ad.getType(), ad.getClassifier(),
+                ad.getScope());
         try {
             resolver.resolve(artifact, remoteRepos, local);
         } catch (ArtifactResolutionException e) {
@@ -107,6 +126,37 @@ public class ArtifactResolver {
             throw new MojoExecutionException("Unable to find artifact.", e);
         }
         return artifact;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Artifact resolveFromAttachedArtifacts(String group, String name,
+            VersionRange vr, String type, String classifier) {
+        Artifact artifactFound = null;
+        List<AttachedArtifact> attachedArtifacts = project.getAttachedArtifacts();
+        for (AttachedArtifact attachedArtifact : attachedArtifacts) {
+            if (group != null && !group.equals(attachedArtifact.getGroupId())) {
+                continue;
+            }
+            if (name != null && !name.equals(attachedArtifact.getArtifactId())) {
+                continue;
+            }
+            if (vr != null
+                    && !vr.containsVersion(new DefaultArtifactVersion(
+                            attachedArtifact.getVersion()))) {
+                continue;
+            }
+            if (type != null && !type.equals(attachedArtifact.getType())) {
+                continue;
+            }
+            if (classifier != null
+                    && !classifier.equals(attachedArtifact.getClassifier())) {
+                continue;
+            }
+            artifactFound = attachedArtifact;
+//            artifactFound.setResolved(true);
+            break;
+        }
+        return artifactFound;
     }
 
     public void resolve(Artifact artifact) throws MojoExecutionException {

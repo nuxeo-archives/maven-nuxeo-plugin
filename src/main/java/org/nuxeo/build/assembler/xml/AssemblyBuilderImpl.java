@@ -47,7 +47,7 @@ public class AssemblyBuilderImpl extends AbstractAssemblyBuilder implements
         ctx.setProperty(Command.MOJO, mojo);
         ctx.setProperty(Command.PROJECT, mojo.getProject());
         ctx.setProperty(Command.RESOLVER, mojo.getArtifactResolver());
-        ctx.setProperty(Command.LOG, mojo.getLog());
+//        ctx.setProperty(Command.as, mojo.getLog());
         ctx.setProperty(Command.RESOURCE_SETS, mojo.getResourceSetMap());
         AssemblyDescriptor descriptor = (AssemblyDescriptor) xmap.load(ctx, in);
 

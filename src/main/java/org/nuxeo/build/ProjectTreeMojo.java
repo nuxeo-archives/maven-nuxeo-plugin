@@ -35,20 +35,20 @@ import org.w3c.dom.Element;
 
 /**
  * Goal which preprocess a nuxeo EAR
- * 
+ *
  * @goal project-tree
- * 
+ *
  * @requiresDependencyResolution test
- * 
+ *
  * @phase process-sources
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class ProjectTreeMojo extends AbstractMojo {
 
     /**
      * Location of the file.
-     * 
+     *
      * @parameter expression="${project}"
      * @required
      */
@@ -93,7 +93,7 @@ public class ProjectTreeMojo extends AbstractMojo {
                 out.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLog().error(e);
             throw new MojoExecutionException(
                     "failed to export dependency tree", e);
         }

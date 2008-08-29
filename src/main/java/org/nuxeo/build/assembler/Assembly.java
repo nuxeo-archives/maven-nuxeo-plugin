@@ -22,20 +22,9 @@ package org.nuxeo.build.assembler;
 import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 public interface Assembly {
-
-    /**
-     * @param log the log to set.
-     */
-    void setLog(Log log);
-
-    /**
-     * @return the log.
-     */
-    Log getLog();
 
     @SuppressWarnings("unchecked")
     Map<String, Artifact> getArtifactMap();

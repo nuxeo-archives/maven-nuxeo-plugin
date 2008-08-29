@@ -25,7 +25,7 @@ import org.nuxeo.build.assembler.xml.AssemblyBuilderImpl;
  *
  * @goal assembly
  *
- * @requiresDependencyResolution test
+ * @requiresDependencyResolution runtime
  *
  * @phase package
  *

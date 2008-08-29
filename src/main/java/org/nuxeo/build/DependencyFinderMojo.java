@@ -25,19 +25,19 @@ import org.apache.maven.project.MavenProject;
 
 /**
  * Goal which preprocess a nuxeo EAR
- * 
+ *
  * @goal find
- * 
+ *
  * @requiresDependencyResolution test
- * 
+ *
  * @phase process-sources
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class DependencyFinderMojo extends AbstractMojo {
     /**
      * Location of the file.
-     * 
+     *
      * @parameter expression="${project}"
      * @required
      */
@@ -106,16 +106,16 @@ public class DependencyFinderMojo extends AbstractMojo {
         getLog().info(
                 " ----------------------------------------------------------------------------");
 
-        System.out.println("");
-        System.out.println("");
+        getLog().info("");
+        getLog().info("");
 
         for (Artifact artifact : artifacts) {
-            System.out.println("===============================================================================");
-            System.out.println("Artifact: " + artifact.getId());
-            System.out.println("===============================================================================");
-            Utils.printArtifactTrail(artifact);
-            System.out.println("");
-            System.out.println("");
+            getLog().info("===============================================================================");
+            getLog().info("Artifact: " + artifact.getId());
+            getLog().info("===============================================================================");
+            getLog().info(Utils.getArtifactTrail(artifact));
+            getLog().info("");
+            getLog().info("");
         }
 
     }

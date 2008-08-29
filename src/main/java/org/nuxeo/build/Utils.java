@@ -34,17 +34,19 @@ public abstract class Utils {
     private Utils() {
     }
 
-    public static void printArtifactTrail(Artifact artifact) {
-        printArtifactTrail(artifact, "  ");
+    public static String getArtifactTrail(Artifact artifact) {
+        return getArtifactTrail(artifact, "  ");
     }
 
-    public static void printArtifactTrail(Artifact artifact, String tab) {
+    public static String getArtifactTrail(Artifact artifact, String tab) {
+        StringBuffer trailStringBuffer=new StringBuffer();
         List<String> trail = artifact.getDependencyTrail();
         String t = "";
         for (String id : trail) {
-            System.out.println(t + "+ " + id);
+            trailStringBuffer.append(t + "+ " + id+System.getProperty("line.separator"));
             t += tab;
         }
+        return trailStringBuffer.toString();
     }
 
     public static String expandVars(String expression,

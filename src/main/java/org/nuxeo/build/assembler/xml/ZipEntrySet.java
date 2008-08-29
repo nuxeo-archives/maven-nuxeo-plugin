@@ -217,7 +217,7 @@ public class ZipEntrySet implements ResourceSet {
                 }
             };
         } catch (Exception e) {
-            e.printStackTrace();
+            AbstractNuxeoAssembler.getLogger().error(e);
             return null;
         }
     }
