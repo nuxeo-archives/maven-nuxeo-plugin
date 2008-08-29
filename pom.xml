@@ -20,7 +20,7 @@
   </description>
 
   <prerequisites>
-    <maven>2.0.8</maven>
+    <maven>2.0.7</maven>
   </prerequisites>
 
   <dependencies>
