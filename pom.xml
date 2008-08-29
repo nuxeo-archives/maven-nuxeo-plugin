@@ -5,9 +5,23 @@
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-nuxeo-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0.7-SNAPSHOT</version>
+  <version>1.0.8-SNAPSHOT</version>
   <name>maven-nuxeo-plugin Maven Mojo</name>
   <url>http://maven.apache.org</url>
+  <description>
+    Maven Nuxeo Plugin This plugin essentially provides build and assembly goals
+    for Nuxeo. It also provides some utility goals. Available goals are:\n -
+    assembly: assemble task\n - attach\n - find: find an artifact in the
+    dependency tree\n - dependency-tree: generates dependency-tree from project
+    artifacts\n - project-tree: generates dependency-tree from project
+    dependencies\n - eclipse-version: transform maven version in an Eclipse
+    compatible version\n - preprocess: (PROTOTYPE) deploys components while or
+    just after packaging, before deployment by server\n
+  </description>
+
+  <prerequisites>
+    <maven>2.0.8</maven>
+  </prerequisites>
 
   <dependencies>
     <dependency>
