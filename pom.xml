@@ -105,81 +105,55 @@
     </url>
   </scm>
 
-  <repositories>
-    <repository>
-      <id>central_proxy</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/central</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>external_snapshot</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/external_snapshot</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>nuxeo_release</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/nuxeo_release</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>nuxeo_snapshot</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/nuxeo_snapshot</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
+ <repositories>
+   <repository>
+     <id>public</id>
+     <url>http://maven.nuxeo.org/public</url>
+     <snapshots>
+       <enabled>false</enabled>
+     </snapshots>
+   </repository>
+   <repository>
+     <id>public-snapshot</id>
+     <url>http://maven.nuxeo.org/public-snapshot</url>
+     <snapshots>
+       <enabled>true</enabled>
+     </snapshots>
+   </repository>
   </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>central_proxy</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/central</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>external_snapshot</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/external_snapshot</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-    <pluginRepository>
-      <id>nuxeo_release</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/nuxeo_release</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>nuxeo_snapshot</id>
-      <url>http://archiva.nuxeo.org/archiva/repository/nuxeo_snapshot</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
 
   <distributionManagement>
+    <site>
+      <id>maven-website</id>
+      <url>scpexe://gironde.nuxeo.com/home/mavenweb/site/</url>
+    </site>
     <repository>
-      <id>nuxeo_release</id>
-      <url>
-        scpexe://tamise.nuxeo.com/home/archiva/repositories/nuxeo_release
-      </url>
+      <id>nuxeo-release</id>
+      <url>scpexe://amour.nuxeo.com/home/nexus/repositories/nuxeo-release</url>
     </repository>
     <snapshotRepository>
-      <id>nuxeo_snapshot</id>
-      <url>
-        scpexe://tamise.nuxeo.com/home/archiva/repositories/nuxeo_snapshot
-      </url>
+      <id>nuxeo-snapshot</id>
+      <url>scpexe://amour.nuxeo.com/home/nexus/repositories/nuxeo-snapshot</url>
     </snapshotRepository>
   </distributionManagement>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>public</id>
+      <url>http://maven.nuxeo.org/public</url>
+      <releases>
+        <enabled>true</enabled>
+     </releases>
+   </pluginRepository>
+   <pluginRepository>
+      <id>public-snapshot</id>
+      <url>http://maven.nuxeo.org/public-snapshot</url>
+      <name>Nuxeo virtual snapshot repository</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories> 
 
   <profiles>
     <profile>
@@ -189,12 +163,12 @@
       </activation>
       <distributionManagement>
         <repository>
-          <id>nuxeo_release</id>
-          <url>file:///home/archiva/repositories/nuxeo_release</url>
+          <id>nuxeo-release</id>
+          <url>file://localhost/home/nexus/repositories/nuxeo-release</url>
         </repository>
         <snapshotRepository>
-          <id>nuxeo_snapshot</id>
-          <url>file:///home/archiva/repositories/nuxeo_snapshot</url>
+          <id>nuxeo-snapshot</id>
+          <url>file://localhost/home/nexus/repositories/nuxeo-snapshot</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>
