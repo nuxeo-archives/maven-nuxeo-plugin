@@ -21,6 +21,7 @@ package org.nuxeo.build.filters;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import java.util.Collections;
 import org.apache.maven.artifact.Artifact;
@@ -35,13 +36,24 @@ public class AndArtifactFilter implements ArtifactFilter {
 
     Collection<ArtifactFilter> filters = new ArrayList<ArtifactFilter>();
 
+//    public boolean include(Artifact artifact) {
+//        for (ArtifactFilter filter : filters) {
+//            if (!filter.include(artifact)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
     public boolean include(Artifact artifact) {
-        for (ArtifactFilter filter : filters) {
+        boolean include = true;
+        for (Iterator<ArtifactFilter> i = filters.iterator(); i.hasNext() && include;) {
+            ArtifactFilter filter = i.next();
             if (!filter.include(artifact)) {
-                return false;
+                include = false;
+                break;
             }
         }
-        return true;
+        return include;
     }
 
     public void add(ArtifactFilter filter) {
