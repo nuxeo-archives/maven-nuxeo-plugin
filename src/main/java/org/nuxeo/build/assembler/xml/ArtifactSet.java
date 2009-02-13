@@ -296,43 +296,61 @@ public class ArtifactSet extends ArtifactResourceSet {
                 resolveArtifacts(superSetArtifacts);
                 artifacts.addAll(superSetArtifacts);
             }
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-            mojo.getLog().debug("CHECK applyIncludeFilters");
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug("CHECK applyIncludeFilters");
+            }
             artifacts=applyIncludeFilters(artifacts);
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-            mojo.getLog().debug("CHECK applyExcludeFilters");
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug("CHECK applyExcludeFilters");
+            }
             artifacts=applyExcludeFilters(artifacts);
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-            mojo.getLog().debug("CHECK applyIncludeDependenciesFilter");
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug("CHECK applyIncludeDependenciesFilter");
+            }
             applyIncludeDependenciesFilter();
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug("CHECK applyExcludeFilters");
+            }
             // apply again exclusion in case of artifacts being included as
             // dependencies
-            mojo.getLog().debug("CHECK applyExcludeFilters");
             artifacts=applyExcludeFilters(artifacts);
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-            mojo.getLog().debug("CHECK applyExcludeDependenciesFilter");
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug("CHECK applyExcludeDependenciesFilter");
+            }
             applyExcludeDependenciesFilter();
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-            mojo.getLog().debug("CHECK resolveArtifacts");
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug("CHECK resolveArtifacts");
+            }
             resolveArtifacts(artifacts);
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-            mojo.getLog().debug("CHECK applyExcludeFilters");
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug("CHECK applyExcludeFilters");
+            }
             artifacts=applyExcludeFilters(artifacts);
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-            // add explicitely declared artifacts
-            mojo.getLog().debug("CHECK collectResolvedArtifacts");
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                // add explicitely declared artifacts
+                mojo.getLog().debug("CHECK collectResolvedArtifacts");
+            }
             collectResolvedArtifacts(artifacts);
-            mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-            mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+            if (mojo.getLog().isDebugEnabled()) {
+                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+            }
         }
         return artifacts;
     }
@@ -343,13 +361,7 @@ public class ArtifactSet extends ArtifactResourceSet {
             if (artifact.getArtifactId().equals(artifactId)) {
                 mojo.getLog().debug("found "+artifact.hashCode());
                 return true;
-//            } else {
-//                mojo.getLog().debug("CHECK DEBUG "+artifact.getArtifactId());
             }
-//            if (artifact.getArtifactId().contains("nuxeo-platform-webapp-core")) {
-//                artifacts.remove(artifact);
-//                mojo.getLog().debug("check4 "+artifacts.contains(artifact));
-//            }
         }
         return false;
     }
@@ -406,10 +418,6 @@ public class ArtifactSet extends ArtifactResourceSet {
                 Artifact nextArtifact = it.next();
                 if (!filter.include(nextArtifact)) {
                     result.add(nextArtifact);
-//                    it.remove();
-//                    mojo.getLog().debug("check1 "+artifacts2.contains(nextArtifact));
-//                    artifacts.remove(nextArtifact);
-//                    mojo.getLog().debug("check2 "+artifacts2.contains(nextArtifact));
                 } else {
                     mojo.getLog().debug("excluded " + nextArtifact+" "+nextArtifact.hashCode()+" (exclude filters)");
                 }
@@ -433,7 +441,6 @@ public class ArtifactSet extends ArtifactResourceSet {
                 Artifact artifact = it.next();
                 if (!filter.include(artifact)) {
                     mojo.getLog().debug("removed " + artifact+" (include filters)");
-//                    it.remove();
                 } else {
                     result.add(artifact);
                 }
