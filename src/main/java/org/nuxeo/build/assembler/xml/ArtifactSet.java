@@ -42,7 +42,7 @@ import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- *
+ * 
  */
 @XObject("artifactSet")
 public class ArtifactSet extends ArtifactResourceSet {
@@ -114,7 +114,6 @@ public class ArtifactSet extends ArtifactResourceSet {
     public void setProfile(final String profile) {
         this.profile = profile;
     }
-
 
     /**
      * @return the includes.
@@ -229,8 +228,8 @@ public class ArtifactSet extends ArtifactResourceSet {
             return null;
         }
         if (includeFilter == null) {
-            OrArtifactFilter filter = new OrArtifactFilter();
-            for (ArtifactDescriptor artifactDescriptor : includes) {
+            final OrArtifactFilter filter = new OrArtifactFilter();
+            for (final ArtifactDescriptor artifactDescriptor : includes) {
                 filter.add(artifactDescriptor.getFilter());
             }
             // TODO: add transitivity filter if needed
@@ -247,8 +246,8 @@ public class ArtifactSet extends ArtifactResourceSet {
             return null;
         }
         if (excludeFilter == null) {
-            OrArtifactFilter filter = new OrArtifactFilter();
-            for (ArtifactDescriptor afd : excludes) {
+            final OrArtifactFilter filter = new OrArtifactFilter();
+            for (final ArtifactDescriptor afd : excludes) {
                 filter.add(afd.getFilter());
             }
             // TODO: add transitivity filter if needed
@@ -258,21 +257,22 @@ public class ArtifactSet extends ArtifactResourceSet {
     }
 
     protected Set<Artifact> loadImportedSets() {
-        HashSet<Artifact> result = new HashSet<Artifact>();
-        Map<String, ResourceSet> sets = mojo.getResourceSetMap();
+        final HashSet<Artifact> result = new HashSet<Artifact>();
+        final Map<String, ResourceSet> sets = mojo.getResourceSetMap();
         if (importedSets != null && importedSets.length > 0) {
-            for (String setId : importedSets) {
-                ResourceSet set = sets.get(setId);
+            for (final String setId : importedSets) {
+                final ResourceSet set = sets.get(setId);
                 if (!(set instanceof ArtifactResourceSet)) {
                     mojo.getLog().warn(
                             "Cannot extend set " + setId
                                     + ". Set not found or not compatible");
                     continue;
                 }
-                ArtifactResourceSet arSet = (ArtifactResourceSet) set;
-                Iterator<Artifact> it = arSet.artifactIterator();
+                final ArtifactResourceSet arSet = (ArtifactResourceSet) set;
+                final Iterator<Artifact> it = arSet.artifactIterator();
+                // ESCA-JAVA0254:
                 while (it.hasNext()) {
-                    Artifact artifact=it.next();
+                    final Artifact artifact = it.next();
                     result.add(artifact);
                 }
             }
@@ -282,7 +282,7 @@ public class ArtifactSet extends ArtifactResourceSet {
 
     /**
      * Get produced artifacts (after extending, resolving and filtering)
-     *
+     * 
      * @return artifacts
      */
     @Override
@@ -292,64 +292,80 @@ public class ArtifactSet extends ArtifactResourceSet {
             artifacts = loadImportedSets();
             resolveArtifacts(artifacts);
             if (superSet != null) {
-                Set<Artifact> superSetArtifacts=superSet.getArtifacts();
+                final Set<Artifact> superSetArtifacts = superSet.getArtifacts();
                 resolveArtifacts(superSetArtifacts);
                 artifacts.addAll(superSetArtifacts);
             }
             if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-webapp-core "
+                                + find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-audit-facade "
+                                + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK applyIncludeFilters");
             }
-            artifacts=applyIncludeFilters(artifacts);
+            applyIncludeFilters();
             if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-webapp-core "
+                                + find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-audit-facade "
+                                + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK applyExcludeFilters");
             }
             artifacts=applyExcludeFilters(artifacts);
             if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-webapp-core "
+                                + find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-audit-facade "
+                                + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK applyIncludeDependenciesFilter");
             }
             applyIncludeDependenciesFilter();
             if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-webapp-core "
+                                + find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-audit-facade "
+                                + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK applyExcludeFilters");
             }
+            resolveArtifacts(artifacts);
             // apply again exclusion in case of artifacts being included as
             // dependencies
             artifacts=applyExcludeFilters(artifacts);
             if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-webapp-core "
+                                + find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-audit-facade "
+                                + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK applyExcludeDependenciesFilter");
             }
             applyExcludeDependenciesFilter();
             if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-webapp-core "
+                                + find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-audit-facade "
+                                + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK resolveArtifacts");
-            }
-            resolveArtifacts(artifacts);
-            if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-                mojo.getLog().debug("CHECK applyExcludeFilters");
-            }
-            artifacts=applyExcludeFilters(artifacts);
-            if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
-                // add explicitely declared artifacts
-                mojo.getLog().debug("CHECK collectResolvedArtifacts");
             }
             collectResolvedArtifacts(artifacts);
             if (mojo.getLog().isDebugEnabled()) {
-                mojo.getLog().debug("CHECK nuxeo-platform-webapp-core "+find("nuxeo-platform-webapp-core"));
-                mojo.getLog().debug("CHECK nuxeo-platform-audit-facade "+find("nuxeo-platform-audit-facade"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-webapp-core "
+                                + find("nuxeo-platform-webapp-core"));
+                mojo.getLog().debug(
+                        "CHECK nuxeo-platform-audit-facade "
+                                + find("nuxeo-platform-audit-facade"));
             }
         }
         return artifacts;
@@ -359,7 +375,7 @@ public class ArtifactSet extends ArtifactResourceSet {
         for (Iterator<Artifact> iterator = artifacts.iterator(); iterator.hasNext();) {
             Artifact artifact = iterator.next();
             if (artifact.getArtifactId().equals(artifactId)) {
-                mojo.getLog().debug("found "+artifact.hashCode());
+                mojo.getLog().debug("found " + artifact.hashCode());
                 return true;
             }
         }
@@ -371,9 +387,9 @@ public class ArtifactSet extends ArtifactResourceSet {
      */
     private void applyExcludeDependenciesFilter() {
         if (excludeDependencies) {
-            HashSet<Artifact> result = new HashSet<Artifact>();
-            for (Artifact artifact : artifacts) {
-                Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
+            final HashSet<Artifact> result = new HashSet<Artifact>();
+            for (final Artifact artifact : artifacts) {
+                final Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
                 result.addAll(deps);
             }
             artifacts.removeAll(result);
@@ -385,13 +401,13 @@ public class ArtifactSet extends ArtifactResourceSet {
      */
     private void applyIncludeDependenciesFilter() {
         if (includeDependencies) {
-            HashSet<Artifact> result = new HashSet<Artifact>();
-            for (Artifact artifact : artifacts) {
-                Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
+            final HashSet<Artifact> result = new HashSet<Artifact>();
+            for (final Artifact artifact : artifacts) {
+                final Set<Artifact> deps = mojo.getArtifactDependencies(artifact);
                 if (deps != null) {
                     if (mojo.getLog().isDebugEnabled()) {
                         mojo.getLog().debug("add dependencies for " + artifact);
-                        for (Artifact dep : deps) {
+                        for (final Artifact dep : deps) {
                             if (!result.contains(dep)) {
                                 mojo.getLog().debug("   added " + dep);
                             }
@@ -406,97 +422,94 @@ public class ArtifactSet extends ArtifactResourceSet {
 
     /**
      * apply exclude filters
-     * @param artifacts2 
-     * @return 
      */
     private Set<Artifact> applyExcludeFilters(Set<Artifact> artifacts2) {
         Set<Artifact> result = new HashSet<Artifact>();
-        ArtifactFilter filter = getExcludeFilter();
+        final ArtifactFilter filter = getExcludeFilter();
         if (filter != null) {
-            Iterator<Artifact> it = artifacts2.iterator();
+            final Iterator<Artifact> it = artifacts2.iterator();
             while (it.hasNext()) {
-                Artifact nextArtifact = it.next();
+                final Artifact nextArtifact = it.next();
                 if (!filter.include(nextArtifact)) {
                     result.add(nextArtifact);
                 } else {
-                    mojo.getLog().debug("excluded " + nextArtifact+" "+nextArtifact.hashCode()+" (exclude filters)");
+                    mojo.getLog().debug(
+                            "excluded " + nextArtifact + " "
+                                    + nextArtifact.hashCode()
+                                    + " (exclude filters)");
                 }
             }
-
-        }
         return result;
+        } else return artifacts2;
     }
 
     /**
      * apply include filters
-     * @param artifacts2
-     * @return 
+-     * @param artifacts2
+-     * @return 
      */
-    private Set<Artifact> applyIncludeFilters(Set<Artifact> artifacts2) {
-        Set<Artifact> result = new HashSet<Artifact>();
-        ArtifactFilter filter = getIncludeFilter();
+    private void applyIncludeFilters() {
+        final ArtifactFilter filter = getIncludeFilter();
         if (filter != null) {
-            Iterator<Artifact> it = artifacts2.iterator();
+            final Iterator<Artifact> it = artifacts.iterator();
             while (it.hasNext()) {
-                Artifact artifact = it.next();
+                final Artifact artifact = it.next();
                 if (!filter.include(artifact)) {
                     mojo.getLog().debug("removed " + artifact+" (include filters)");
-                } else {
-                    result.add(artifact);
+                    it.remove();
                 }
             }
         }
-        return result;
     }
 
-    private void resolveArtifacts(Set<Artifact> artifactsToResolve) {
-        ArtifactResolver resolver = mojo.getArtifactResolver();
-        for (Artifact artifact : artifactsToResolve) {
+    private void resolveArtifacts(final Set<Artifact> artifactsToResolve) {
+        final ArtifactResolver resolver = mojo.getArtifactResolver();
+        for (final Artifact artifact : artifactsToResolve) {
             if (!artifact.isResolved()) {
                 try {
                     resolver.resolve(artifact);
-                } catch (MojoExecutionException e) {
+                } catch (final MojoExecutionException e) {
                     mojo.getLog().warn(e);
                 }
             }
         }
     }
 
-
-    public void collectResolvedArtifacts(Set<Artifact> artifactSet) {
-        ArtifactResolver resolver = mojo.getArtifactResolver();
+    public void collectResolvedArtifacts(final Set<Artifact> artifactSet) {
+        final ArtifactResolver resolver = mojo.getArtifactResolver();
 
         try {
-            for (ArtifactDescriptor ad : artifactDescriptors) {
+            for (final ArtifactDescriptor ad : artifactDescriptors) {
                 if (ad.profile != null && !mojo.isProfileActivated(ad.profile)) {
                     continue;
                 }
-                if (ad.version == null) { // no version given - try to guess the version using the managed versions
+                if (ad.version == null) { // no version given - try to guess the
+                    // version using the managed versions
                     tryFillVersion(ad);
                 }
-                Artifact artifact = resolver.resolve(ad);
+                final Artifact artifact = resolver.resolve(ad);
                 if (artifact != null) {
                     mojo.getLog().info("add explicitely declared "+artifact);
                     artifactSet.add(artifact);
                 }
             }
-        } catch (MojoExecutionException e) {
+        } catch (final MojoExecutionException e) {
             throw new Error(e);
         }
     }
 
-    protected void tryFillVersion(ArtifactDescriptor ad) {
+    protected void tryFillVersion(final ArtifactDescriptor ad) {
         if (ad.group == null || ad.name == null) {
             return; // cannot guess version
         }
         Artifact artifact = null;
-        Map map = mojo.getProject().getManagedVersionMap();
+        final Map map = mojo.getProject().getManagedVersionMap();
         String key=ad.group+":"+ad.name;
         if (ad.type != null) {
             key += ":"+ad.type;
             artifact = (Artifact)map.get(key); // group:artifact:type:version
         } else {
-            String k = key+":jar";
+            final String k = key + ":jar";
             artifact = (Artifact)map.get(k);
             if (artifact == null) {
                 artifact = (Artifact)map.get(key+":ejb");
@@ -511,13 +524,11 @@ public class ArtifactSet extends ArtifactResourceSet {
         }
     }
 
-
-
     @Override
     public String toString() {
-        StringBuffer toStringBuffer = new StringBuffer();
-        toStringBuffer.append("{" + getId() + ", extends: " + getExtendedSets() + ","
-                + getExtendedSetId() + ", includeDependencies="
+        final StringBuffer toStringBuffer = new StringBuffer();
+        toStringBuffer.append("{" + getId() + ", extends: " + getExtendedSets()
+                + "," + getExtendedSetId() + ", includeDependencies="
                 + getIncludeDependencies() + ", resolvedArtifacts="
                 + getResolvedArtifacts() + ", " + getArtifacts().size()
                 + " artifacts=" + getArtifacts());
