@@ -305,7 +305,7 @@ public class ArtifactSet extends ArtifactResourceSet {
                                 + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK applyIncludeFilters");
             }
-            applyIncludeFilters();
+            artifacts = applyIncludeFilters();
             if (mojo.getLog().isDebugEnabled()) {
                 mojo.getLog().debug(
                         "CHECK nuxeo-platform-webapp-core "
@@ -315,7 +315,7 @@ public class ArtifactSet extends ArtifactResourceSet {
                                 + find("nuxeo-platform-audit-facade"));
                 mojo.getLog().debug("CHECK applyExcludeFilters");
             }
-            artifacts=applyExcludeFilters(artifacts);
+            artifacts = applyExcludeFilters();
             if (mojo.getLog().isDebugEnabled()) {
                 mojo.getLog().debug(
                         "CHECK nuxeo-platform-webapp-core "
@@ -338,7 +338,7 @@ public class ArtifactSet extends ArtifactResourceSet {
             resolveArtifacts(artifacts);
             // apply again exclusion in case of artifacts being included as
             // dependencies
-            artifacts=applyExcludeFilters(artifacts);
+            artifacts = applyExcludeFilters();
             if (mojo.getLog().isDebugEnabled()) {
                 mojo.getLog().debug(
                         "CHECK nuxeo-platform-webapp-core "
@@ -423,11 +423,11 @@ public class ArtifactSet extends ArtifactResourceSet {
     /**
      * apply exclude filters
      */
-    private Set<Artifact> applyExcludeFilters(Set<Artifact> artifacts2) {
+    private Set<Artifact> applyExcludeFilters() {
         Set<Artifact> result = new HashSet<Artifact>();
         final ArtifactFilter filter = getExcludeFilter();
         if (filter != null) {
-            final Iterator<Artifact> it = artifacts2.iterator();
+            final Iterator<Artifact> it = artifacts.iterator();
             while (it.hasNext()) {
                 final Artifact nextArtifact = it.next();
                 if (!filter.include(nextArtifact)) {
@@ -439,26 +439,33 @@ public class ArtifactSet extends ArtifactResourceSet {
                                     + " (exclude filters)");
                 }
             }
-        return result;
-        } else return artifacts2;
+            return result;
+        } else
+            return artifacts;
     }
 
     /**
      * apply include filters
--     * @param artifacts2
--     * @return 
      */
-    private void applyIncludeFilters() {
+    private Set<Artifact> applyIncludeFilters() {
+        Set<Artifact> result = new HashSet<Artifact>();
         final ArtifactFilter filter = getIncludeFilter();
         if (filter != null) {
             final Iterator<Artifact> it = artifacts.iterator();
             while (it.hasNext()) {
                 final Artifact artifact = it.next();
                 if (!filter.include(artifact)) {
-                    mojo.getLog().debug("removed " + artifact+" (include filters)");
-                    it.remove();
+                    mojo.getLog().debug(
+                            "excluded " + artifact + " "
+                                    + artifact.hashCode()
+                                    + " (include filters)");
+                } else {
+                    result.add(artifact);
                 }
             }
+            return result;
+        } else {
+            return artifacts;
         }
     }
 
@@ -489,7 +496,7 @@ public class ArtifactSet extends ArtifactResourceSet {
                 }
                 final Artifact artifact = resolver.resolve(ad);
                 if (artifact != null) {
-                    mojo.getLog().info("add explicitely declared "+artifact);
+                    mojo.getLog().info("add explicitely declared " + artifact);
                     artifactSet.add(artifact);
                 }
             }
@@ -504,17 +511,17 @@ public class ArtifactSet extends ArtifactResourceSet {
         }
         Artifact artifact = null;
         final Map map = mojo.getProject().getManagedVersionMap();
-        String key=ad.group+":"+ad.name;
+        String key = ad.group + ":" + ad.name;
         if (ad.type != null) {
-            key += ":"+ad.type;
-            artifact = (Artifact)map.get(key); // group:artifact:type:version
+            key += ":" + ad.type;
+            artifact = (Artifact) map.get(key); // group:artifact:type:version
         } else {
             final String k = key + ":jar";
-            artifact = (Artifact)map.get(k);
+            artifact = (Artifact) map.get(k);
             if (artifact == null) {
-                artifact = (Artifact)map.get(key+":ejb");
+                artifact = (Artifact) map.get(key + ":ejb");
                 if (artifact == null) {
-                    artifact = (Artifact)map.get(key+":rar");
+                    artifact = (Artifact) map.get(key + ":rar");
                 }
             }
         }
