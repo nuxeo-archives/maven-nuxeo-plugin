@@ -236,6 +236,7 @@ public class AssemblyImpl implements Assembly {
         if (artifactSets != null) {
             log.info("Processing artifact sets");
             for (ArtifactSet set : artifactSets) {
+                // TODO JC manage exclusion of a profile (begins with a '!') 
                 String profile = set.getProfile();
                 if (profile != null
                         && !mojo.isProfileActivated(set.getProfile())) {

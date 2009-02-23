@@ -487,6 +487,7 @@ public class ArtifactSet extends ArtifactResourceSet {
 
         try {
             for (final ArtifactDescriptor ad : artifactDescriptors) {
+                // TODO JC manage exclusion of a profile (begins with a '!') 
                 if (ad.profile != null && !mojo.isProfileActivated(ad.profile)) {
                     continue;
                 }
