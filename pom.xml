@@ -5,7 +5,7 @@
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-nuxeo-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0.9-SNAPSHOT</version>
+  <version>1.0.8.3</version>
   <name>maven-nuxeo-plugin Maven Mojo</name>
   <url>http://maven.apache.org</url>
   <description>
@@ -95,13 +95,13 @@
 
   <scm>
     <connection>
-      scm:svn:http://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/tags/1.0.8.2
+      scm:svn:http://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/trunk
     </connection>
     <developerConnection>
-      scm:svn:https://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/tags/1.0.8.2
+      scm:svn:https://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/trunk
     </developerConnection>
     <url>
-      http://svn.nuxeo.org/trac/nuxeo/browser/org.nuxeo.build/maven-nuxeo-plugin/tags/1.0.8.2
+      http://svn.nuxeo.org/trac/nuxeo/browser/org.nuxeo.build/maven-nuxeo-plugin/trunk
     </url>
   </scm>
 
