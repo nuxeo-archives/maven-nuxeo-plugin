@@ -16,11 +16,14 @@
  */
 package org.nuxeo.build.ant;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.model.Profile;
-import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Sequential;
 
 /**
@@ -28,21 +31,35 @@ import org.apache.tools.ant.taskdefs.Sequential;
  *
  */
 public class ProfileTask extends Sequential {
-    private String name;
+
+    public static final String MATCHED_PROFILES_REF = "nuxeo.matched.profiles.ref";
+    public static final String ACTIVATED_PROFILES_REF = "nuxeo.activated.profiles.ref";
+    
+    protected String name;
 
     public void setName(String value) {
         this.name = value;
     }
-
-    public void execute() throws BuildException {
-        MavenEnvironment env = new MavenEnvironment();
-        if (isProfileActivated(env.getMavenProject(), name)) {
+    
+    public String getProfileName() {
+        return name;
+    }
+    
+    
+    public void execute() throws BuildException {        
+        if (isProfileActivated(getProject(), name)) {
+            getMatchedProfiles(getProject()).add(name);
             super.execute();
         }
     }
     
-    public static boolean isProfileActivated(MavenProject project, String name) {
-        List<Profile> profiles = project.getActiveProfiles();
+    @SuppressWarnings("unchecked")
+    public static boolean isProfileActivated(Project project, String name) {
+        if (getActivatedProfiles(project).contains(name)) {
+            return true;
+        }
+        MavenEnvironment env = new MavenEnvironment();
+        List<Profile> profiles = env.getMavenProject().getActiveProfiles();
         for (Profile p : profiles) {
             if (p.getId().equals(name)) {
                 return true;
@@ -50,5 +67,41 @@ public class ProfileTask extends Sequential {
         }
         return false;
     }
+    
+    
+    public static void activateProfile(Project project, String profile) {
+        Set<String> ap = getActivatedProfiles(project);
+        ap.add(profile);
+     }
 
+    public static boolean hasMatched(Project project, String profile) {
+        return getMatchedProfiles(project).contains(profile);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static Set<String> getActivatedProfiles(Project project) {
+        Set<String> mp = (Set<String>)project.getReference(ACTIVATED_PROFILES_REF);
+        if (mp == null) {
+            mp = new HashSet<String>();
+            project.addReference(ACTIVATED_PROFILES_REF, mp);
+        }
+        return mp;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Set<String> getMatchedProfiles(Project project) {
+        Set<String> mp = (Set<String>)project.getReference(MATCHED_PROFILES_REF);
+        if (mp == null) {
+            mp = new HashSet<String>();
+            project.addReference(MATCHED_PROFILES_REF, mp);
+        }
+        return mp;
+    }
+
+    public static boolean executeProfileTask(Project project, Task profileTask) {
+        int last = getMatchedProfiles(project).size();
+        profileTask.perform();
+        return last != getMatchedProfiles(project).size();
+    }
+    
 }

@@ -25,7 +25,6 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.ImportTask;
-import org.apache.tools.ant.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -37,7 +36,6 @@ public class AntRunTask extends ImportTask {
     private List<String> targets = new ArrayList<String>();
     private String file;
     private boolean optional;
-    private static final FileUtils FILE_UTILS = FileUtils.newFileUtils();
 
     /**
      * sets the optional attribute

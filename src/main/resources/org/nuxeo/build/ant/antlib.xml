@@ -1,4 +1,5 @@
 <antlib>
+  <taskdef name="profile-group" classname="org.nuxeo.build.ant.ProfileGroupTask" />
   <taskdef name="profile" classname="org.nuxeo.build.ant.ProfileTask" />
-  <taskdef name="antRun" classname="org.nuxeo.build.ant.AntRunTask" />
+  <taskdef name="antrun" classname="org.nuxeo.build.ant.AntRunTask" />
 </antlib>

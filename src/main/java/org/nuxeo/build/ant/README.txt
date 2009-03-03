@@ -67,5 +67,14 @@ profile  - which can be used as an if task to conditionally build depending on t
 <profile name="SQL">
    ... do something here for profile SQL
 </profile>  
+ 
+ profile-group - which can be used to group exclusive profiles
+ 
+ <profile-group default="profile2">
+   <profile name="profile0"> ... </profile>
+   <profile name="profile1"> ... </profile>
+   <profile name="profile2"> ... </profile>
+ </profile>
+
   
 See also https://maven-antrun-extended-plugin.dev.java.net for the other available ant tasks.
