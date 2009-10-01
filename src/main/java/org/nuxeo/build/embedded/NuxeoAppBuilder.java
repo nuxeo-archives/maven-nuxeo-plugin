@@ -156,7 +156,7 @@ public class NuxeoAppBuilder {
             File web = getWebDirectory();
             if (web.isDirectory()) {
                 System.out.println("Copying web resources");
-                File dst = new File(nxserver, "web/WEB-INF");
+                File dst = new File(nxserver, "web/root.war/WEB-INF");
                 dst.mkdirs();
                 copyResources(web, dst);
             }
@@ -311,7 +311,7 @@ public class NuxeoAppBuilder {
     }
 
     protected File getWebDirectory() {
-        return new File(home, "web/WEB-INF");   
+        return new File(home, "web/root.war/WEB-INF");   
     }
     
     protected File getDatasourceDirectory() {
@@ -385,7 +385,7 @@ public class NuxeoAppBuilder {
 
     
     public void copyWebModuleResources(BundleInfo bi) throws IOException {
-        File modules = new File(nxserver, "web/modules");
+        File modules = new File(nxserver, "web/root.war/modules");
         modules.mkdirs();
         // get the symbolic name
         File module = new File(modules, bi.id);
