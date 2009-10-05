@@ -338,6 +338,10 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
                 getLog().debug(offsetString + "=>" + artifact);
                 collectChildrenArtifacts(node, result, nodesKnown);
             }
+            // remove pom dependencies after their children have been included
+            if ("pom".equalsIgnoreCase(artifact.getType())) {
+                result.remove(artifact);
+            }
         }
         // remove pom dependencies after their children have been included
         if ("pom".equalsIgnoreCase(root.getArtifact().getType())) {
