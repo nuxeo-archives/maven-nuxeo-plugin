@@ -50,7 +50,7 @@ import org.nuxeo.common.utils.StringUtils;
 import org.nuxeo.common.xmap.Context;
 
 /**
- *
+ * 
  * @author bstefanescu
  * @author jcarsique
  */
@@ -59,7 +59,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * Location of the file.
-     *
+     * 
      * @parameter expression="${project}"
      * @required
      */
@@ -70,7 +70,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * Location of the file.
-     *
+     * 
      * @parameter expression="${descriptor}" default-value="assembly.xml"
      * @required
      */
@@ -78,7 +78,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * The output directory
-     *
+     * 
      * @parameter expression="${outputDirectory}" default-value="target"
      * @required
      */
@@ -86,7 +86,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * Location of the file.
-     *
+     * 
      * @parameter expression="${targetFile}"
      * @required
      */
@@ -94,7 +94,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * Location of the local repository.
-     *
+     * 
      * @parameter expression="${localRepository}"
      * @readonly
      * @required
@@ -103,7 +103,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * List of Remote Repositories used by the resolver
-     *
+     * 
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @required
@@ -112,7 +112,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * Used to look up Artifacts in the remote repository.
-     *
+     * 
      * @component
      * @required
      * @readonly
@@ -121,7 +121,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * Used to look up Artifacts in the remote repository.
-     *
+     * 
      * @component
      * @required
      * @readonly
@@ -130,26 +130,26 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * Whether to zip the result or not
-     *
+     * 
      * @parameter expression="${format}"
-     *
+     * 
      */
     protected String format;
 
     /**
      * Whether to use a prefix when compressing (the prefix determine the
      * directory on the root of the zip package)
-     *
+     * 
      * @parameter expression="${zipRoot}"
-     *
+     * 
      */
     protected String zipRoot;
 
     /**
      * Whether or not to run the preprocessor after the assembly
-     *
+     * 
      * @parameter expression="${runPreprocessor}"
-     *
+     * 
      */
     protected boolean runPreprocessor;
 
@@ -161,7 +161,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * The dependency tree builder to use.
-     *
+     * 
      * @component
      * @required
      * @readonly
@@ -170,7 +170,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * The artifact metadata source to use.
-     *
+     * 
      * @component
      * @required
      * @readonly
@@ -179,7 +179,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * The artifact collector to use.
-     *
+     * 
      * @component
      * @required
      * @readonly
@@ -213,7 +213,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
      */
     public ArtifactResolver getArtifactResolver() {
         if (artifactResolver == null) {
-            artifactResolver = new ArtifactResolver(project,local,
+            artifactResolver = new ArtifactResolver(project, local,
                     remoteArtifactRepositories, resolver, factory);
         }
         return artifactResolver;
@@ -290,10 +290,10 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
             ctx.setProperty(Command.METADATA_SOURCE,
                     getArtifactMetadataSource());
             ctx.setProperty(Command.COLLECTOR, getArtifactCollector());
-            artifactResolver = new ArtifactResolver(project,local,
+            artifactResolver = new ArtifactResolver(project, local,
                     remoteArtifactRepositories, resolver, factory);
             ctx.setProperty(Command.RESOLVER, artifactResolver);
-//            ctx.setProperty(Command.LOG, getLog());
+            // ctx.setProperty(Command.LOG, getLog());
 
             dependencyTree = new DependencyTreeFull(ctx);
             // dependencyTree = new
@@ -339,6 +339,10 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
                 collectChildrenArtifacts(node, result, nodesKnown);
             }
         }
+        // remove pom dependencies after their children have been included
+        if ("pom".equalsIgnoreCase(root.getArtifact().getType())) {
+            result.remove(root.getArtifact());
+        }
         if (getLog().isDebugEnabled()) {
             offset--;
         }
@@ -361,7 +365,7 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         try {
             getLog().info("Loading assembly descriptor: " + descriptor);
             Assembly assembly = assemblyBuilder.parse(assemblyFile);
-//            assembly.setLog(getLog());
+            // assembly.setLog(getLog());
             HashMap<Object, Object> context = new HashMap<Object, Object>();
             context.putAll(project.getProperties());
             context.put(Command.ASSEMBLY_FILE, assemblyFile);
@@ -375,11 +379,11 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
 
     /**
      * returns resolved artifact from project
-     *
+     * 
      * @param artifact
-     * @return
+     * @return Artifact from project's dependencies tree with same id as
+     *         artifact given in parameters
      */
-    @SuppressWarnings("unchecked")
     public Artifact getArtifact(Artifact artifact) {
         Artifact artifactFound = getArtifact(artifact.getId());
         return artifactFound != null ? artifactFound : artifact;
