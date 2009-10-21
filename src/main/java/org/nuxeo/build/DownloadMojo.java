@@ -11,11 +11,12 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.nuxeo.common.utils.FileUtils;
 
 /**
- * Download an artifact file
+ * Download an artifact file. 
+ * Does not require a pom.xml in current directory when running from command line.
  *
  * @goal download
- *
- * @phase process-sources
+ * @phase process-resources 
+ * @requiresProject false
  *
  * @author bstefanescu
  */
@@ -103,7 +104,7 @@ public class DownloadMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to copy file: "+file+" to "+out);
         }
-        System.out.println("> downloaded to" +out.getAbsolutePath());
+        System.out.println("> downloaded to " +out.getAbsolutePath());
     }
 
 }
