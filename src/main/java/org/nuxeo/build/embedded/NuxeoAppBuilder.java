@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -146,12 +149,12 @@ public class NuxeoAppBuilder {
                 dst.mkdir();
                 copyResources(cfg, dst);
             }
-            File datasources = getConfigDirectory();
-            if (cfg.isDirectory()) {
-                System.out.println("Copying datasources");
-                File dst = new File(nxserver, "datasources");
+            File nxwar = getNuxeoWar();
+            if (nxwar.isDirectory()) {
+                System.out.println("Copying Nuxeo WAR");
+                File dst = new File(nxserver, "nuxeo.war");
                 dst.mkdir();
-                copyResources(datasources, dst);
+                copyResources(nxwar, dst);
             }            
             File web = getWebDirectory();
             if (web.isDirectory()) {
@@ -290,14 +293,22 @@ public class NuxeoAppBuilder {
             File tmpBundle = new File(tmp, jar+".tmp");
             try {
                 ZipUtils.unzip(jar, tmpBundle);
-                BundleInfo bi = new BundleInfo(tmpBundle);
+                BundleInfo bi = null;
+                try {
+                    bi = new BundleInfo(tmpBundle);
+                } catch (IllegalArgumentException e) { // not an OSGI bundle - treat this JAR like an ordinary lib
+                    // this is the case of nuxeo-core-storage-sql-extensions-xxx.jar which is unfortunately not an OSGi bundle
+                    copyLibResources(tmpBundle);
+                    return;
+                }
                 pushBundle(bi);
                 copyBundleResources(bi);
             } finally {
                 FileUtils.deleteTree(tmpBundle);
             }
         } else if (jar.isDirectory()) {
-            throw new UnsupportedOperationException("Bundle directories support is not yet implemented. Failed processing: "+jar);            
+            System.err.println("! Bundle directories support is not yet implemented. Failed processing: "+jar);
+            //throw new UnsupportedOperationException("Bundle directories support is not yet implemented. Failed processing: "+jar);            
         }
     }
 
@@ -314,8 +325,8 @@ public class NuxeoAppBuilder {
         return new File(home, "web/root.war/WEB-INF");   
     }
     
-    protected File getDatasourceDirectory() {
-        return new File(home, "datasources");
+    protected File getNuxeoWar() {
+        return new File(home, "nuxeo.war");
     }
     
     protected File getConfigDirectory() {
@@ -338,6 +349,8 @@ public class NuxeoAppBuilder {
         nxserver = new File(metaInf, "nuxeo/nxserver");
         nxserver.mkdirs();
         nuxeo = nxserver.getParentFile();
+        // run preprocessor if needed
+        runPreprocessor(home);
     }
     
     
@@ -484,6 +497,71 @@ public class NuxeoAppBuilder {
         // needed when developing GWT apps since GWT eclipse plugin comes with jetty
         if (excludeJetty) {
             FileUtils.deleteTree(new File(tmp, "org/mortbay"));    
+        }
+    }
+
+    
+    protected void runPreprocessor(File home) {
+        if (!new File(home, "OSGI-INF/deployment-container.xml").isFile()) {
+            return;
+        }
+        File file = findFile(new File(home, "bundles"), "nuxeo-runtime-deploy-");
+        if (file != null) {
+            try {
+                runPreprocessor(home, file);
+            } catch (Exception e) {
+                throw new Error("Failed to run nuxeo preprocessor", e);
+            }
+        } else {
+            System.out.println("No nuxeo preprocessor found.");
+        }
+    }
+    
+    protected File findFile(File dir, String prefix) {
+        String[] names = dir.list();
+        for (String name : names) {
+            if (name.startsWith(prefix)) {
+                return new File(dir, name);
+            }
+        }
+        return null;
+    }
+    
+    
+    protected void runPreprocessor(File home, File preprocessor) throws Exception {
+        MutableURLClassLoader cl = new MutableURLClassLoader();
+        File libs = new File(home, "lib");
+        File[] files = libs.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.getPath().endsWith(".jar")) {
+                    cl.addURL(file.toURI().toURL());
+                }
+            }        
+        }
+        File bundles = new File(home, "bundles");
+        files = bundles.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.getPath().endsWith(".jar")) {
+                    cl.addURL(file.toURI().toURL());
+                }
+            }        
+        }
+        System.out.println("# Running preprocessor ...");
+        Class<?> klass = cl.loadClass("org.nuxeo.runtime.deployment.preprocessor.DeploymentPreprocessor");
+        Method main = klass.getMethod("main", String[].class);
+        main.invoke(null, new Object[] {new String[] {home.getAbsolutePath()}});
+        System.out.println("# Preprocessing done.");
+    }
+    
+    class MutableURLClassLoader extends URLClassLoader {
+        public MutableURLClassLoader() {
+            super (new URL[0], NuxeoAppBuilder.class.getClassLoader());            
+        }
+        @Override
+        public void addURL(URL url) {
+            super.addURL(url);
         }
     }
     

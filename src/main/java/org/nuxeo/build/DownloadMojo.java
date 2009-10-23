@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.DefaultArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -37,6 +38,13 @@ public class DownloadMojo extends AbstractMojo {
      */
     private File out;
 
+    /**
+     * @parameter expression="${repository}"
+     * The additional repository to look into. Format is:
+     * id:url
+     */
+    private String repoUrl;
+    
     /**
      * Used to look up Artifacts in the remote repository.
      *
@@ -79,6 +87,10 @@ public class DownloadMojo extends AbstractMojo {
      * @throws MojoExecutionException, MojoFailureException
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (repoUrl != null) {
+            ArtifactRepository repo = new DefaultArtifactRepository("auto-generated-repository", repoUrl, null);            
+            remoteArtifactRepositories.add(repo);
+        }
         String[] ar = artifact.split(":");
         if (ar.length < 3) {
             throw new MojoExecutionException("Artifact key is invalid: "+artifact+". Please use the format: groupId:artifactId:version[:type][:classifier]");
