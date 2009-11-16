@@ -412,7 +412,9 @@ public abstract class AbstractNuxeoAssembler extends AbstractMojo implements
         if (props == null) {
             props = project.getProperties();
             props.put("project.version", project.getVersion());
-            props.put("basedir", project.getBasedir());
+            if (project.getBasedir()!=null) {
+                props.put("basedir", project.getBasedir().getPath());
+            }
             props.put("outputDirectory",
                     project.getBuild().getOutputDirectory());
             props.put("buildDirectory", project.getBuild().getDirectory());
