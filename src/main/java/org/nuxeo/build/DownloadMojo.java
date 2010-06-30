@@ -27,7 +27,7 @@ public class DownloadMojo extends AbstractMojo {
     /**
      * @parameter expression="${artifact}"
      * @required
-     * The artifact to download (groupId:artifactId:version[:type])
+     * The artifact to download (groupId:artifactId:version[:type][:classifier])
      */
     private String artifact;
 
@@ -44,7 +44,7 @@ public class DownloadMojo extends AbstractMojo {
      * id:url
      */
     private String repoUrl;
-    
+
     /**
      * Used to look up Artifacts in the remote repository.
      *
