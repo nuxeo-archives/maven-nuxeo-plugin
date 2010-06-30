@@ -1,6 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>nuxeo-tools-parent</artifactId>
+    <groupId>org.nuxeo.tools</groupId>
+    <version>2.0</version>
+  </parent>
+
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-nuxeo-plugin</artifactId>
   <packaging>maven-plugin</packaging>
@@ -127,21 +134,15 @@
   </build>
 
   <scm>
-    <connection>
-      scm:svn:http://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/trunk
-    </connection>
-    <developerConnection>
-      scm:svn:https://svn.nuxeo.org/nuxeo/org.nuxeo.build/maven-nuxeo-plugin/trunk
-    </developerConnection>
-    <url>
-      http://svn.nuxeo.org/trac/nuxeo/browser/org.nuxeo.build/maven-nuxeo-plugin/trunk
-    </url>
+    <connection>scm:hg:http://hg.nuxeo.org/tools/maven-nuxeo-plugin</connection>
+    <developerConnection>scm:hg:https://hg.nuxeo.org/tools/maven-nuxeo-plugin</developerConnection>
+    <url>http://hg.nuxeo.org/tools/maven-nuxeo-plugin</url>
   </scm>
 
   <repositories>
     <repository>
       <id>public</id>
-      <url>http://maven.nuxeo.org/public</url>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -151,7 +152,7 @@
     </repository>
     <repository>
       <id>public-snapshot</id>
-      <url>http://maven.nuxeo.org/public-snapshot</url>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public-snapshot</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -161,46 +162,5 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>public</id>
-      <url>http://maven.nuxeo.org/public</url>
-      <name>Nuxeo virtual release repository</name>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>public-snapshot</id>
-      <url>http://maven.nuxeo.org/public-snapshot</url>
-      <name>Nuxeo virtual snapshot repository</name>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <distributionManagement>
-    <site>
-      <id>maven-website</id>
-      <url>scpexe://gironde.nuxeo.com/home/mavenweb/site/</url>
-    </site>
-    <repository>
-      <id>nuxeo-release</id>
-      <url>http://maven.nuxeo.org/nexus/content/repositories/nuxeo-release</url>
-    </repository>
-    <snapshotRepository>
-      <id>nuxeo-snapshot</id>
-      <url>http://maven.nuxeo.org/nexus/content/repositories/nuxeo-snapshot</url>
-    </snapshotRepository>
-  </distributionManagement>
 
 </project>
